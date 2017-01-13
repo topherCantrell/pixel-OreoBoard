@@ -1,2 +1,2 @@
-# oreoboard
-The LED Oreo Board
+# Oreo Board
+The Neopixel Oreo Board
