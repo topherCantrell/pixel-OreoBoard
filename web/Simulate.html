@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NeoPixel 5858</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>    
+  </head>
+  
+  <body>
+  
+  <h1>Bottom</h1>
+  <svg id="oreoZoe_D1" width="1100" height="280"></svg>
+  <br>
+  <textarea id="code_D1" style="width:80ch;height:40ch">
+  
+  // The D1 area is the bottom of the robot. It has 228 RGBW pixels
+  configure(out=D1,length=228,hasWhite=true)
+  
+  // Define two colors: 0=red, 1=blue
+  color(color=0,W=0, R=100, G=0, B=0)   // 100% red (no white, blue, or green) 
+  color(color=1,W=0, R=0,   G=0, B=100) // 100% blue (no white, red, or green)
+    
+  :here   // Just a label
+  
+  Strip.solid(color=0)  // Make the whole strip red
+  pause(time=1000)      // Pause 1000ms (1 second)
+  Strip.solid(color=1)  // Make the whole strip blue
+  pause(time=1000)      // Pause 1 second
+  
+  goto :here  // Endless loop
+  
+  </textarea>
+  
+  <br>
+  <button id="run_D1">Run</button>
+  <button id="stop_D1">Stop</button>
+  <button id="step_D1">Step</button>
+  <button id="reset_D1">Reset</button>
+  
+  <hr>
+  <h1>Doors</h1>
+  <svg id="oreoZoe_D3" width="1100" height="130"></svg>
+  <br>
+  <textarea id="code_D3" style="width:80ch;height:40ch"></textarea>
+  <textarea id="output_D3" readonly style="width:40ch;height:40ch"></textarea>
+  <br>
+  <button id="run_D3">Run</button>
+  <button id="stop_D3">Stop</button>
+  <button id="step_D3">Step</button>
+  <button id="reset_D3">Reset</button>
+  
+  <hr>
+  <h1>Grid</h1>
+  <svg id="oreoZoe_D2" width="350" height="130"></svg>
+  <br>
+  <textarea id="code_D2" style="width:80ch;height:40ch"></textarea>
+  <textarea id="output_D2" readonly style="width:40ch;height:40ch"></textarea>
+  <br>
+  <button id="run_D2">Run</button>
+  <button id="stop_D2">Stop</button>
+  <button id="step_D2">Step</button>
+  <button id="reset_D2">Reset</button>
+  
+  <script src="ZoeProcessor.js"></script>
+  <script src="neo.js"></script>
+  
+  </body>
+  
+</html>
