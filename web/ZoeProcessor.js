@@ -1,25 +1,68 @@
 function initZoeProcessor(stripElement,script) {
 	
 	var stripConfig;
-	var colors = [];
+	var colors = [];	
 	
 	var stripElement = stripElement;
 	var running = false;
 	var lines = getLines(script);
+	var variables = getVars();
 	if(lines.length>0) running=true;
 	
-	var scriptPos = 0;
-
+	var scriptPos = findFunction("START");
+	if(scriptPos===undefined) throw "Must have a START function.";
+	++scriptPos;
+		
 	var my = {};	
 	
+	function getVars() {
+		var ret = {};
+		for(var x=0;x<lines.length;++x) {
+			var curLine = lines[x];
+			if(curLine.startsWith("VAR ")) {
+				curLine = curLine.substring(4);
+				var i = curLine.indexOf("=");
+				var name = curLine.trim();
+				var value = 0;
+				if(i>0) {	
+					name = curLine.substring(0,i).trim();
+					value = curLine.substring(i+1).trim();					
+				}
+				if(ret[name]!==undefined) {
+					throw "Variable "+name+" has already been defined";
+				}
+				ret[name] = value;
+			} else if(curLine.startsWith("FUNCTION ")) {
+				break;
+			}			
+		}	
+		return ret;
+	}
+	
+	function substituteVars(line) {
+		while(true) {
+			var i = line.indexOf("[");
+			if(i<0) return line;
+			var j = line.indexOf("]",i);
+			if(j<0) throw "Missing variable close ']'.";
+			var name = line.substring(i+1,j).trim();
+			if(variables[name]===undefined) {
+				throw "Variable "+name+" has not been defined.";
+			}
+			line = line.substring(0,i)+variables[name]+line.substring(j+1);
+		}
+	}
+	
 	function getLines(script) {
-		script = script.replace(/ /g,"").toUpperCase();
 		var lines = script.split("\n");	
-		for(var x=lines.length-1;x>=0;--x) {		
+		for(var x=lines.length-1;x>=0;--x) {
+			lines[x] = lines[x].replace(/;/g,'');
+			lines[x] = lines[x].replace(/\s+/g, ' ').toUpperCase();			
 			var i = lines[x].indexOf("//");
 			if(i>=0) {
 				lines[x] = lines[x].substring(0,i);
 			}
+			lines[x] = lines[x].trim();
 			if(lines[x]==="") {
 				lines.splice(x,1);
 			}
@@ -27,7 +70,7 @@ function initZoeProcessor(stripElement,script) {
 		return lines;
 	}
 
-	function parseCommand(command) {
+	function parseCommand(command) {		
 		var i = command.indexOf("(");
 		if(i<0) throw "The opening '(' is required.";
 		var j = command.indexOf(")");
@@ -37,15 +80,15 @@ function initZoeProcessor(stripElement,script) {
 		var pparts = command.substring(i+1,j).split(",");
 		
 		var ret = [];
-		ret.push(command.substring(0,i));
+		ret.push(command.substring(0,i).trim());
 		
 		var params = [];
 		for(var x=0;x<pparts.length;++x) {
 			var p = pparts[x];
 			i = p.indexOf("=");
 			if(i>=0) {
-				var key = p.substring(0,i);
-				var value = p.substring(i+1);
+				var key = p.substring(0,i).trim();
+				var value = p.substring(i+1).trim();
 				if(key==="") throw "Must have a name before the '='.";
 				if(value==="") throw "Must have a value after the '='.";
 				params.push([key,value]);		
@@ -90,42 +133,50 @@ function initZoeProcessor(stripElement,script) {
 		return ret;
 	}
 	
-	my.runNext = function(cb) {
-		
-		if(!running) return running;
+	function findFunction(name) {
+		name = "FUNCTION "+name+"(";
+		for(var x=0;x<lines.length;++x) {
+			if(lines[x].startsWith(name)) {
+				return x;
+			}
+		}
+		return undefined;
+	}
+	
+	function findLabel(name) {
+		var dst = name+":"
+		for(var x=0;x<lines.length;++x) {
+			if(lines[x]===dst) {
+				return x;
+			}
+		}
+		throw "Could not find label  "+name;
+	}
+	
+	my.runNext = function(cb) {				
 				
 		try {
-			var curLine = lines[scriptPos++];
+						
+			var curLine = lines[scriptPos++];	
+			var fillLine = substituteVars(curLine);
 			
 			// Ignore labels
-			if(curLine[0]===':') {
+			if(curLine[curLine.length-1]===':') {
 				cb();
 				return;
 			}
-			
-			// Handle GOTOs
-			if(curLine.startsWith("GOTO")) {	
-				var dst = curLine.substring(4);
-				if(dst.length===0) throw "Missing GOTO :target.";
-				if(dst[0]!==':') throw "Missing GOTO :target.";				
-				for(var x=0;x<lines.length;++x) {
-					if(lines[x] === dst) {
-						scriptPos = x;
-						cb();
-						return;
-					}
-				}
-				throw "Could not find GOTO target "+dst;
+						
+			if(curLine==="}" || curLine==="RETURN") {
+				throw "IMPLEMENT ME";
 			}
 			
-			var parts = parseCommand(curLine);
+			// TODO assuming a function here. Better to look for "word(" first.
 			
-			running = scriptPos<lines.length;
-			
+			var parts = parseCommand(fillLine);								
+						
 			if(scriptPos==0 && parts[0]!='CONFIGURE') {
 				throw "CONFIGURE must be the first command.";				
 			}			
-			
 			
 			if(parts[0]==='CONFIGURE') {
 				if(stripConfig) {
@@ -138,6 +189,11 @@ function initZoeProcessor(stripElement,script) {
 				cb();
 			}
 			
+			else if(parts[0]==='GOTO') {
+				scriptPos = findLabel(parts[1][0]);
+				cb();
+			}
+									
 			else if(parts[0]==='PAUSE') {
 				var time = getParameter('TIME',parts[1],"number");
 				
