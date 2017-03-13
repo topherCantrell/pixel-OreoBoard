@@ -171,7 +171,11 @@ function initZoeProcessor(stripElement,script) {
 			}
 						
 			if(curLine==="}" || curLine==="RETURN") {
-			    // TODO if end
+			    if(callStack.length===0) {
+			        running = false;
+			        cb();
+			        return;
+			    }
 			    scriptPos = callStack.pop();
 			    cb();
 			    return;
@@ -315,6 +319,18 @@ function initZoeProcessor(stripElement,script) {
 				cb();
 			}
 			
+			else if(parts[0]==='STRIP.SET') {
+			    var c = getParameter('COLOR',parts[1],"colorNumber");
+			    if(colors[c]===undefined) throw "Undefined color "+c;
+                var rc = "#"+twoDigitHex(Math.floor((colors[c].red/100)*255))+
+                          twoDigitHex(Math.floor((colors[c].green/100)*255))+
+                          twoDigitHex(Math.floor((colors[c].blue/100)*255));
+			    var pix = getParameter('PIXEL',parts[1],"number");
+			    // TODO range check
+			    stripElement.find("#"+stripConfig.out+"_"+pix).attr("fill",rc);		
+			    cb();
+			}
+			
 			else if(parts[0]==='STRIP.SOLID') {
 				var c = getParameter('COLOR',parts[1],"colorNumber");
 				if(colors[c]===undefined) throw "Undefined color "+c;
@@ -339,7 +355,8 @@ function initZoeProcessor(stripElement,script) {
 	my.run = function() {
 		my.runNext(function() {
 			if(running) {
-				setTimeout(my.run,0);
+				//setTimeout(my.run,0);
+			    my.run();
 			}
 		});		
 	};

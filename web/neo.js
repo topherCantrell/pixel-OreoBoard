@@ -22,7 +22,7 @@ var NEO = (function() {
 		var oy = OFFS[direction][1];	
 		for(var z=0;z<length;++z) {		
 			strips.append("<circle "+
-					"id='S"+my.cursor.strip+"_"+(my.cursor.number)+"' "+
+					"id='D"+my.cursor.strip+"_"+(my.cursor.number)+"' "+
 					"cx='"+(my.cursor.x)+"' "+
 					"cy='"+(my.cursor.y)+"' "+
 					"r='"+my.cursor.radius+"' "+

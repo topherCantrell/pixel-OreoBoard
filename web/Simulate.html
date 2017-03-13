@@ -13,9 +13,14 @@
   <br>
   <textarea id="code_D1" style="width:80ch;height:40ch">
   
-  
+ 
+
 var first
-var second
+var last
+var ptr
+var x
+
+var cnt
   
 function start() {
 
@@ -27,28 +32,49 @@ function start() {
   color(color=1,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
   color(color=2,W=0, R=0,   G=100, B=100)  // Green + Blue
   color(color=3,W=0, R=100, G=0, B=100)    // Red + Blue
-    
+  color(color=4,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
+  color(color=5,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
+  color(color=6,W=0, R=0,   G=100, B=100)  // Green + Blue
+  color(color=7,W=0, R=100, G=0, B=100)
+        
   [first] = 0
+  [last] = 3
   
-  here:   
+  here:
   
-  Strip.solid(color=[first])
-  [first] = [first] + 1  
-  pause(time=1000)  
- 
-  if([first]>3)  
-      [first] = 0
+  gosub(alternate)
+  pause(time=1000)
+  [first] = [first] + 1
+  [last] = [last] + 1
+  
+  if([first] < 4)
+      goto(here)
       
-  goto(here)
+  [first] = 0
+  [last] = 3
+  
+  goto(here) 
  
 }
 
-function blink() {
-  Strip.solid(color=[first])  // Make the whole strip red
-  pause(time=1000)      // Pause 1000ms (1 second)
-  Strip.solid(color=[second])  // Make the whole strip blue
-  pause(time=1000)      // Pause 1 second
+function alternate() {
+
+ [x] = 0
+ [ptr] = [first]
+ 
+ alt_here:
+ 
+ Strip.set(pixel=[x],color=[ptr])
+ [ptr] = [ptr] + 1
+ if([ptr] > [last])
+   [ptr] = [first]
+   
+ [x] = [x] + 1
+ if ([x]<228)
+   goto(alt_here);
+
 }
+
   
   
   
