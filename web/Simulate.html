@@ -14,8 +14,8 @@
   <textarea id="code_D1" style="width:80ch;height:40ch">
   
   
-var red = 100
-var blue = 80
+var first
+var second
   
 function start() {
 
@@ -23,18 +23,31 @@ function start() {
   configure(out=D1,length=228,hasWhite=true)
   
   // Define two colors: 0=red, 1=blue
-  color(color=0,W=0, R=[red], G=0, B=0)   // 100% red (no white, blue, or green) 
-  color(color=1,W=0, R=0,   G=0, B=[blue]) // 100% blue (no white, red, or green)
+  color(color=0,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
+  color(color=1,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
+  color(color=2,W=0, R=0,   G=100, B=100)  // Green + Blue
+  color(color=3,W=0, R=100, G=0, B=100)    // Red + Blue
     
-  here:   // Just a label
+  [first] = 0
   
-  Strip.solid(color=0)  // Make the whole strip red
-  pause(time=1000)      // Pause 1000ms (1 second)
-  Strip.solid(color=1)  // Make the whole strip blue
-  pause(time=1000)      // Pause 1 second
+  here:   
   
-  goto(here)  // Endless loop
+  Strip.solid(color=[first])
+  [first] = [first] + 1  
+  pause(time=1000)  
  
+  if([first]>3)  
+      [first] = 0
+      
+  goto(here)
+ 
+}
+
+function blink() {
+  Strip.solid(color=[first])  // Make the whole strip red
+  pause(time=1000)      // Pause 1000ms (1 second)
+  Strip.solid(color=[second])  // Make the whole strip blue
+  pause(time=1000)      // Pause 1 second
 }
   
   

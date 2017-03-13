@@ -1,7 +1,8 @@
 function initZoeProcessor(stripElement,script) {
 	
 	var stripConfig;
-	var colors = [];	
+	var colors = [];		
+	var callStack = [];
 	
 	var stripElement = stripElement;
 	var running = false;
@@ -153,6 +154,9 @@ function initZoeProcessor(stripElement,script) {
 		throw "Could not find label  "+name;
 	}
 	
+	var OPERATORS = ['+','-','*','/','%'];
+	var LOGIC = ['<=','>=','==','!=','<','>'];
+	
 	my.runNext = function(cb) {				
 				
 		try {
@@ -167,11 +171,65 @@ function initZoeProcessor(stripElement,script) {
 			}
 						
 			if(curLine==="}" || curLine==="RETURN") {
-				throw "IMPLEMENT ME";
+			    // TODO if end
+			    scriptPos = callStack.pop();
+			    cb();
+			    return;
 			}
 			
-			// TODO assuming a function here. Better to look for "word(" first.
-			
+			if(curLine[0]==='[') {
+			    // A = B op C     +,-,*,/,%
+			    // or 
+			    // A = B
+			    var i = curLine.indexOf("=");
+			    if(i<0) throw "Expected '=' for math expression.";
+			    var left = curLine.substring(0,i).trim();
+			    
+			    if(left[left.length-1]!==']') throw "Missing ']' before '='.";
+			    left = left.substring(1,left.length-1).trim();
+			    if(variables[left]===undefined) throw "Unknown variable ["+left+"]";
+			    
+			    var right = curLine.substring(i+1).trim();	
+			    right = substituteVars(right);
+			    
+			    for(var x=0;x<OPERATORS.length;++x) {
+			        i = right.indexOf(OPERATORS[x]);
+			        if(i>0) break;
+			    }
+			    
+			    if(i<0) { // Assignment			        
+			        variables[left] = right;
+			        cb();
+			        return;
+			    }
+			    
+			    // B op C
+			    var partA = parseInt(right.substring(0,i).trim());
+			    var partB = parseInt(right.substring(i+1).trim());
+			    var op = right[i];
+			    
+			    switch(op) {
+			    case '+':
+			        variables[left] = partA + partB;
+			        break;
+			    case '-':
+                    variables[left] = partA - partB;
+                    break;
+			    case '*':
+                    variables[left] = partA * partB;
+                    break;
+			    case '/':
+                    variables[left] = partA / partB;
+                    break;
+			    case '%':
+                    variables[left] = partA % partB;
+                    break;
+			    }
+			    
+			    cb();
+                return;			    
+			}
+							
 			var parts = parseCommand(fillLine);								
 						
 			if(scriptPos==0 && parts[0]!='CONFIGURE') {
@@ -192,6 +250,49 @@ function initZoeProcessor(stripElement,script) {
 			else if(parts[0]==='GOTO') {
 				scriptPos = findLabel(parts[1][0]);
 				cb();
+			}
+			
+			else if(parts[0]==='GOSUB') {
+			    callStack.push(scriptPos);
+			    scriptPos = findFunction(parts[1][0]);
+			    ++scriptPos;
+                cb();
+			}
+			
+			else if(parts[0]==='IF') {
+			    var exp = parts[1][0][0];
+			    for(var x=0;x<LOGIC.length;++x) {
+                    i = exp.indexOf(LOGIC[x]);
+                    if(i>0) break;
+                }
+			    if(i<0) throw "Expected a logic operator in expression "+exp;
+			    var left = parseInt(exp.substring(0,i).trim());
+			    var right = parseInt(exp.substring(i+1).trim());
+			    var op = LOGIC[x];
+			    var pass = false;
+			    switch(op) {
+			    case '<=':
+			        pass = left <= right;
+			        break;
+			    case '>=':
+			        pass = left >= right;
+			        break;
+			    case '==':
+			        pass = left == right;
+			        break;
+			    case '!=':
+			        pass = left != right;
+			        break;
+			    case '<':
+			        pass = left < right;
+			        break;
+			    case '>':
+			        pass = left > right;
+			        break;
+			    }
+			    
+			    if(!pass) ++scriptPos; // skip next statement
+			    cb();
 			}
 									
 			else if(parts[0]==='PAUSE') {
@@ -216,6 +317,7 @@ function initZoeProcessor(stripElement,script) {
 			
 			else if(parts[0]==='STRIP.SOLID') {
 				var c = getParameter('COLOR',parts[1],"colorNumber");
+				if(colors[c]===undefined) throw "Undefined color "+c;
 				var rc = "#"+twoDigitHex(Math.floor((colors[c].red/100)*255))+
 				          twoDigitHex(Math.floor((colors[c].green/100)*255))+
 				          twoDigitHex(Math.floor((colors[c].blue/100)*255));
