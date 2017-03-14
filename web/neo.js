@@ -80,17 +80,44 @@ NEO.makeStrip(2,10);
 NEO.setCursor(NEO.cursor.x,NEO.cursor.y);
 NEO.makeStrip(1,20);
 
-var proc;
+var proc1 = initZoeProcessor($("#oreoZoe_D1"),$("#code_D1").val());   
+var proc2 = initZoeProcessor($("#oreoZoe_D2"),$("#code_D2").val());
+var proc3 = initZoeProcessor($("#oreoZoe_D3"),$("#code_D3").val()); 
 
-$("#run_D1").bind("click",function() {	
-	proc = initZoeProcessor($("#oreoZoe_D1"),$("#code_D1").val());	
-	proc.run();	
+$("#stop_D1").bind("click",function() { 
+    proc1.stop();   
+});
+$("#stop_D2").bind("click",function() { 
+    proc2.stop();
+});
+$("#stop_D3").bind("click",function() { 
+    proc3.stop();    
+ });
+
+
+$(".zoeEvent").bind("click",function() {
+    var t = $(this);    
+    if(t.hasClass("D1")) {
+        if(t.text().toUpperCase()==="INIT") {
+            proc1.reset($("#code_D1").val()); 
+        }
+        proc1.event(t.text());
+    }  
+    if(t.hasClass("D2")) {
+        if(t.text().toUpperCase()==="INIT") {
+            proc2reset($("#code_D2").val()); 
+        }
+        proc2.event(t.text());
+    } 
+    if(t.hasClass("D3")) {
+        if(t.text().toUpperCase()==="INIT") {
+            proc3.reset($("#code_D3").val()); 
+        }
+        proc3.event(t.text());
+    } 
 });
 
-$("#stop_D1").bind("click",function() {	
-	if(proc) {
-		proc.stop();
-	}
-});
+
+
 
 

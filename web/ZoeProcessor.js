@@ -3,43 +3,14 @@ function initZoeProcessor(stripElement,script) {
 	var stripConfig;
 	var colors = [];		
 	var callStack = [];
+	var functionStartStack = [];
+	var variables = {};
 	
-	var stripElement = stripElement;
-	var running = false;
-	var lines = getLines(script);
-	var variables = getVars();
-	if(lines.length>0) running=true;
+	var stripElement = stripElement;	
+	var lines = getLines(script);	
 	
-	var scriptPos = findFunction("START");
-	if(scriptPos===undefined) throw "Must have a START function.";
-	++scriptPos;
-		
 	var my = {};	
-	
-	function getVars() {
-		var ret = {};
-		for(var x=0;x<lines.length;++x) {
-			var curLine = lines[x];
-			if(curLine.startsWith("VAR ")) {
-				curLine = curLine.substring(4);
-				var i = curLine.indexOf("=");
-				var name = curLine.trim();
-				var value = 0;
-				if(i>0) {	
-					name = curLine.substring(0,i).trim();
-					value = curLine.substring(i+1).trim();					
-				}
-				if(ret[name]!==undefined) {
-					throw "Variable "+name+" has already been defined";
-				}
-				ret[name] = value;
-			} else if(curLine.startsWith("FUNCTION ")) {
-				break;
-			}			
-		}	
-		return ret;
-	}
-	
+			
 	function substituteVars(line) {
 		while(true) {
 			var i = line.indexOf("[");
@@ -144,14 +115,17 @@ function initZoeProcessor(stripElement,script) {
 		return undefined;
 	}
 	
-	function findLabel(name) {
+	function findLabel(name,functionStart) {
 		var dst = name+":"
-		for(var x=0;x<lines.length;++x) {
+		for(var x=functionStart+1;x<lines.length;++x) {
 			if(lines[x]===dst) {
 				return x;
 			}
+			if(lines[x].startsWith("FUNCTION ")) {
+			    break;
+			}
 		}
-		throw "Could not find label  "+name;
+		throw "Could not find label  "+name+" in current function.";
 	}
 	
 	var OPERATORS = ['+','-','*','/','%'];
@@ -177,9 +151,27 @@ function initZoeProcessor(stripElement,script) {
 			        return;
 			    }
 			    scriptPos = callStack.pop();
+			    functionStartStack.pop();
 			    cb();
 			    return;
 			}
+			
+			if(curLine.startsWith("VAR ")) {
+                curLine = curLine.substring(4);
+                var i = curLine.indexOf("=");
+                var name = curLine.trim();
+                var value = 0;
+                if(i>0) {   
+                    name = curLine.substring(0,i).trim();
+                    value = curLine.substring(i+1).trim();                  
+                }
+                if(variables[name]!==undefined) {
+                    throw "Variable "+name+" has already been defined";
+                }
+                variables[name] = value;
+                cb();
+                return;
+            }
 			
 			if(curLine[0]==='[') {
 			    // A = B op C     +,-,*,/,%
@@ -252,26 +244,34 @@ function initZoeProcessor(stripElement,script) {
 			}
 			
 			else if(parts[0]==='GOTO') {
-				scriptPos = findLabel(parts[1][0]);
+				scriptPos = findLabel(parts[1][0],functionStartStack[functionStartStack.length-1]);
 				cb();
 			}
 			
 			else if(parts[0]==='GOSUB') {
-			    callStack.push(scriptPos);
+			    callStack.push(scriptPos);			    
 			    scriptPos = findFunction(parts[1][0]);
+			    if(scriptPos===undefined) throw "Unknown function "+parts[1][0];
+			    functionStartStack.push(scriptPos);
 			    ++scriptPos;
                 cb();
 			}
 			
 			else if(parts[0]==='IF') {
-			    var exp = parts[1][0][0];
+			    var exp;
+			    if(parts[1][0].length===1) {
+			        exp = parts[1][0][0];
+			    } else {
+			        // TODO YUCK
+			        exp = parts[1][0][0] + "="+parts[1][0][1];
+			    }
 			    for(var x=0;x<LOGIC.length;++x) {
                     i = exp.indexOf(LOGIC[x]);
                     if(i>0) break;
                 }
 			    if(i<0) throw "Expected a logic operator in expression "+exp;
 			    var left = parseInt(exp.substring(0,i).trim());
-			    var right = parseInt(exp.substring(i+1).trim());
+			    var right = parseInt(exp.substring(i+LOGIC[x].length).trim());
 			    var op = LOGIC[x];
 			    var pass = false;
 			    switch(op) {
@@ -301,9 +301,8 @@ function initZoeProcessor(stripElement,script) {
 									
 			else if(parts[0]==='PAUSE') {
 				var time = getParameter('TIME',parts[1],"number");
-				
 				my.pauseTimeout = setTimeout(function() {
-					my.pauseTimeout = undefined;
+				    my.pauseTimeout = undefined;
 					cb();
 				},time);				
 			}
@@ -352,15 +351,31 @@ function initZoeProcessor(stripElement,script) {
 				
 	};
 	
-	my.run = function() {
-		my.runNext(function() {
-			if(running) {
-				//setTimeout(my.run,0);
-			    my.run();
-			}
-		});		
-	};
+	function run() {
+	    my.runNext(function() {
+            if(running) {
+                //setTimeout(my.run,0);
+                run();
+            }
+        });     
+	}
 	
+	my.event = function(eventName) {	    
+	    var pos = findFunction(eventName.toUpperCase());
+	    if(pos!==undefined) {	        
+	        // abort anything currently running
+	        if(my.pauseTimeout) {
+	            clearTimeout(my.pauseTimeout);
+	            my.pauseTimeout = undefined;
+	        }
+	        callStack = [];
+	        functionStartStack = [pos];
+	        scriptPos = pos+1;
+	        running = true;
+	        run();
+	    }	    
+	};
+			
 	my.stop = function() {
 		my.running = false;
 		if(my.pauseTimeout) {
@@ -369,6 +384,21 @@ function initZoeProcessor(stripElement,script) {
 		}
 	};
 	
+	my.reset = function(script) {
+	    my.stop();
+	    lines = getLines(script);
+	    stripConfig = undefined;
+	    colors = [];        
+	    callStack = [];
+	    functionStartStack = [];
+	    variables = {};
+	};
+	
+	var scriptPos = findFunction("INIT");
+    if(scriptPos===undefined) throw "Must have an INIT function.";
+    ++scriptPos;   
+    running = false;
+    	
 	return my;	
 	
 }

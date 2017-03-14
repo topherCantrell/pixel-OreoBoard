@@ -11,22 +11,19 @@
   <h1>Bottom</h1>
   <svg id="oreoZoe_D1" width="1100" height="280"></svg>
   <br>
-  <textarea id="code_D1" style="width:80ch;height:40ch">
+  <textarea id="code_D1" style="width:100ch;height:60ch">
   
- 
+function init() {
 
-var first
-var last
-var ptr
-var x
-
-var cnt
-  
-function start() {
-
-  // The D1 area is the bottom of the robot. It has 228 RGBW pixels
   configure(out=D1,length=228,hasWhite=true)
-  
+	
+  var first
+  var last
+  var ptr
+  var x
+		
+  var cnt
+	
   // Define two colors: 0=red, 1=blue
   color(color=0,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
   color(color=1,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
@@ -36,6 +33,19 @@ function start() {
   color(color=5,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
   color(color=6,W=0, R=0,   G=100, B=100)  // Green + Blue
   color(color=7,W=0, R=100, G=0, B=100)
+  
+  here:
+  Strip.solid(color=0);
+  Pause(time=1000);
+  Strip.solid(color=1);
+  Pause(time=1000);
+  goto(here)
+
+}
+  
+function autonomous() {
+
+  // The D1 area is the bottom of the robot. It has 228 RGBW pixels  
         
   [first] = 0
   [last] = 3
@@ -62,7 +72,7 @@ function alternate() {
  [x] = 0
  [ptr] = [first]
  
- alt_here:
+ here:
  
  Strip.set(pixel=[x],color=[ptr])
  [ptr] = [ptr] + 1
@@ -70,45 +80,111 @@ function alternate() {
    [ptr] = [first]
    
  [x] = [x] + 1
- if ([x]<228)
-   goto(alt_here);
-
-}
-
+ if ([x]<228) 
+   goto(here);
+ 
+}  
   
-  
-  
-  </textarea>
-  
+  </textarea>  
   <br>
-  <button id="run_D1">Run</button>
-  <button id="stop_D1">Stop</button>
-  <button id="step_D1">Step</button>
-  <button id="reset_D1">Reset</button>
+  <button id="stop_D1">Stop</button>   
+  <button class="zoeEvent D1">INIT</button>
+  <button class="zoeEvent D1" style="margin-left:2em">Autonomous</button>
+  <button class="zoeEvent D1">Teleop</button>
+  <button class="zoeEvent D1" style="margin-left:1em">ClimbUp</button>
+  <button class="zoeEvent D1">ClimbDown</button>
+  <button class="zoeEvent D1"style="margin-left:1em">DoorOpen</button>
+  <button class="zoeEvent D1">DoorClose</button>
+  <button class="zoeEvent D1"style="margin-left:1em">Party</button>  
   
   <hr>
   <h1>Doors</h1>
   <svg id="oreoZoe_D3" width="1100" height="130"></svg>
   <br>
-  <textarea id="code_D3" style="width:80ch;height:40ch"></textarea>
-  <textarea id="output_D3" readonly style="width:40ch;height:40ch"></textarea>
-  <br>
-  <button id="run_D3">Run</button>
+  <textarea id="code_D3" style="width:100ch;height:60ch">
+function init() {
+
+  var cur  
+  var cur2
+
+  // The D3 area is the bottom of the robot. It has 100 RGBW pixels
+  configure(out=D3,length=100,hasWhite=false)
+  
+  color(color=0,W=0, R=0, G=0, B=0)    
+  color(color=1,W=0, R=0,   G=100, B=100) 
+  
+  Strip.solid(color=0)
+
+}
+
+function doorOpen() {
+
+  [cur] = 0
+  [cur2] = 50
+
+  here:
+  Strip.set(pixel=[cur],color=1)
+  Strip.set(pixel=[cur2],color=1)
+  pause(time=10)
+  [cur] = [cur] + 1
+  [cur2] = [cur2] + 1
+  
+  if([cur]<50)
+    goto(here)
+      
+}
+
+function doorClose() {
+  [cur] = 49
+  [cur2] = 99
+
+  here:
+  Strip.set(pixel=[cur],color=0)
+  Strip.set(pixel=[cur2],color=0)
+  pause(time=10)
+  [cur] = [cur] - 1
+  [cur2] = [cur2] - 1
+  
+  if([cur]>=0)
+    goto(here)
+}
+  </textarea>
+  <br>  
   <button id="stop_D3">Stop</button>
-  <button id="step_D3">Step</button>
-  <button id="reset_D3">Reset</button>
+  <button class="zoeEvent D3">INIT</button>
+  <button class="zoeEvent D3" style="margin-left:2em">Autonomous</button>
+  <button class="zoeEvent D3">Teleop</button>
+  <button class="zoeEvent D3" style="margin-left:1em">ClimbUp</button>
+  <button class="zoeEvent D3">ClimbDown</button>
+  <button class="zoeEvent D3"style="margin-left:1em">DoorOpen</button>
+  <button class="zoeEvent D3">DoorClose</button>
+  <button class="zoeEvent D3"style="margin-left:1em">Party</button>  
   
   <hr>
   <h1>Grid</h1>
   <svg id="oreoZoe_D2" width="350" height="130"></svg>
   <br>
-  <textarea id="code_D2" style="width:80ch;height:40ch"></textarea>
-  <textarea id="output_D2" readonly style="width:40ch;height:40ch"></textarea>
+  <textarea id="code_D2" style="width:100ch;height:60ch">
+function init() {
+
+  // The D2 area is the text grid plate. It has 8x8x3 pixels.
+  configure(out=D2length=192,hasWhite=false)
+  
+  Strip.solid(color=0)
+
+}
+
+  </textarea>
   <br>
-  <button id="run_D2">Run</button>
   <button id="stop_D2">Stop</button>
-  <button id="step_D2">Step</button>
-  <button id="reset_D2">Reset</button>
+  <button class="zoeEvent D2">INIT</button>
+  <button class="zoeEvent D2" style="margin-left:2em">Autonomous</button>
+  <button class="zoeEvent D2">Teleop</button>
+  <button class="zoeEvent D2" style="margin-left:1em">ClimbUp</button>
+  <button class="zoeEvent D2">ClimbDown</button>
+  <button class="zoeEvent D2"style="margin-left:1em">DoorOpen</button>
+  <button class="zoeEvent D2">DoorClose</button>
+  <button class="zoeEvent D2"style="margin-left:1em">Party</button>  
   
   <script src="ZoeProcessor.js"></script>
   <script src="neo.js"></script>
