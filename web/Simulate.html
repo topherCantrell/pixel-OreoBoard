@@ -15,6 +15,7 @@
   
 function init() {
 
+  // The D1 area is the bottom of the robot
   configure(out=D1,length=228,hasWhite=true)
 	
   var first
@@ -32,7 +33,7 @@ function init() {
   color(color=4,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
   color(color=5,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
   color(color=6,W=0, R=0,   G=100, B=100)  // Green + Blue
-  color(color=7,W=0, R=100, G=0, B=100)
+  color(color=7,W=0, R=100, G=0, B=100)    // Red + Blue (again)
   
   here:
   Strip.solid(color=0);
@@ -107,7 +108,7 @@ function init() {
   var cur  
   var cur2
 
-  // The D3 area is the bottom of the robot. It has 100 RGBW pixels
+  // The D3 area is the gear basket doors. It has 100 RGBW pixels (50 on each)
   configure(out=D3,length=100,hasWhite=false)
   
   color(color=0,W=0, R=0, G=0, B=0)    
@@ -165,12 +166,43 @@ function doorClose() {
   <svg id="oreoZoe_D2" width="350" height="130"></svg>
   <br>
   <textarea id="code_D2" style="width:100ch;height:60ch">
+  
+pattern 5 = {
+  "11111",
+  "1....",
+  "1....",
+  "11111",
+  "....1",
+  "....1",
+  "11111"
+}
+
+pattern 8 = {
+  "22222",
+  "2...2",
+  "2...2",
+  "22222",
+  "2...2",
+  "2...2",
+  "22222"
+}
+
 function init() {
 
   // The D2 area is the text grid plate. It has 8x8x3 pixels.
-  configure(out=D2length=192,hasWhite=false)
+  configure(out=D2,length=192,hasWhite=false)
+  
+  color(color=0, W=0, R=90,  G=90,   B=90)      
+  color(color=1, W=0, R=0,   G=0,    B=100)    
+  color(color=2, W=0, R=100, G=0,    B=0)  
+  color(color=3, W=0, R=100, G=100,   B=0) 
   
   Strip.solid(color=0)
+  
+  Strip.pattern(x=0,y=0,pattern=5,colorOffset=0)
+  Strip.pattern(x=6,y=0,pattern=8,colorOffset=0)
+  Strip.pattern(x=12,y=0,pattern=5,colorOffset=0)
+  Strip.pattern(x=18,y=0,pattern=8,colorOffset=1)
 
 }
 

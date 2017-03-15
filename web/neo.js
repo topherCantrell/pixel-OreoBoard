@@ -105,7 +105,7 @@ $(".zoeEvent").bind("click",function() {
     }  
     if(t.hasClass("D2")) {
         if(t.text().toUpperCase()==="INIT") {
-            proc2reset($("#code_D2").val()); 
+            proc2.reset($("#code_D2").val()); 
         }
         proc2.event(t.text());
     } 
