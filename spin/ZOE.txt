@@ -1,0 +1,34 @@
+Commands manipulate memory. The PAUSE command initiates a refresh before the pause. This allows the
+pixel streaming code to reside within the same cog.
+
+-- HEADER AREA --
+
+DD LL WW 00        ; Configuration: out=DD, length=LL, hasWhite=WW
+.. .. .. ..        ; Color palette (256x4 bytes) (word aligned)
+.. .. .. ..        ; 32 call-stack slots
+.. .. .. ..        ; Pixel buffer (1 byte per pixel for LL pixels)
+NN                 ; Number of variables
+.. .. .. ..        ; Two bytes for each variable
+"INIT" 00 PP PP    ; Event text, null terminator, pointer
+"PARTY" 00 PP PP   ; Event text, null terminator, pointer
+00                 ; End of event list
+
+-- OPCODES --
+
+OP is either a constant or variable:
+T0000000_VVVVVVVV_VVVVVVVV
+T = 1 for variable or 0 for constant
+V = constant (16 bit signed) or variable number
+
+01 NN OP           ; [NN] = OP
+02 NN OP mm OP     ; [NN] = OP operator OP (mm: 0=+, 1=-, 2=*, 3=/, 4=%) 
+03 OP              ; PAUSE time=OP
+04 OP OP OP OP OP  ; DEFINECOLOR color=OP, w=OP, r=OP, g=OP, b=OP
+05 OP              ; STRIP.SOLID color=OP
+06 OP OP           ; STRIP.SET pixel=OP, color=OP
+07 OP NN WW HH ..  ; PATTERN number=OP, length=NN, width height data ..
+08 OP OP OP OP     ; STRIP.PATTERN x=OP, y=OP, pattern=OP, colorOffset=OP
+09 PP PP           ; GOTO location=PPPP
+0A PP PP           ; GOSUB location=PPPP
+0B                 ; RETURN
+OC OP nn OP        ; IF(OP logic OP) logic: 0=<=, 1=>=, 2===, 3=!=, 4=<, 5=>

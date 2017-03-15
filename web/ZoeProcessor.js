@@ -325,7 +325,7 @@ function initZoeProcessor(stripElement,script) {
 				},time);				
 			}
 			
-			else if(parts[0]==='COLOR') {				
+			else if(parts[0]==='DEFINECOLOR') {				
 				var num = getParameter('COLOR',parts[1],"colorNumber");
 				colors[num] = {
 					white : getParameter('W',parts[1],"colorByte",stripConfig.hasWhite),

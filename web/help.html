@@ -7,38 +7,42 @@
   
   <body>
   
-  <h1>config</h1>
+  <h1>Zoe</h1>
   
-  config(out=,length=,hasWhite=)
-  oreoOut  - D1, D2, D3, or D4
-  length   - number of pixels on the strip
-  hasWhite - true if four-byte pixels
+  Zoe is a programming language for LED animations. The language is very BASIC-like and designed to be simple and fast.<p>
   
-  <h1>color</h1>
+  Zoe programs compile into byte codes that run on the Parallax Propeller board (the Oreo Board).
   
-  color(number=,W=,R=,G=,B=) 
+  The language syntax will edit visually within a JavaScript editor.
   
-  <h1>Strip.solid</h1>
+  <h1>Basics</h1>
   
-  Strip.solid()
+  TODO: variables (no locals), variables are numbers (signed long), labels, functions, init function, commands with param=, comments
+  TODO: one line per command, spaces ignored, no semicolon or ending, case insensitive, simple math expressions and IF logic
+  TODO: best way is to change existing code
   
+  <h1>Events</h1>
   
+  TODO: startup event (init), other events from the system
   
+  <h1>Language Reference</h1>
   
-  <hr>
-    
-  <pre>
+  <h2>VAR and Math</h2>
   
-  configure(out=D1,length=228,hasWhite=true)
-  color(color=0,W=0,R=16,G=0,B=0) // Comment on end
+  <h2>PAUSE(TIME=?)</h2>
+     
+  <h2>CONFIGURE(OUT=?, LENGTH=?, HASWHITE=?)</h2>  
   
-  // Comment here
+  <h2>DEFINECOLOR(COLOR=?, W=?, R=?, G=?, B=?)</h2>
   
-  Strip.solid(color=0)
+  <h2>STRIP.SOLID(COLOR=)</h2>
   
-  </pre>
+  <h2>STRIP.SET(PIXEL=, COLOR=)</h2>
+  
+  <h2>PATTERN(NUMBER=) { ... }</h2>
+  
+  <h2>STRIP.PATTERN(X=?, Y=?, PATTERN=?, COLOROFFSET=?)</h2>
       
-  
   </body>
   
 </html>

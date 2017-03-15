@@ -26,14 +26,14 @@ function init() {
   var cnt
 	
   // Define two colors: 0=red, 1=blue
-  color(color=0,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
-  color(color=1,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
-  color(color=2,W=0, R=0,   G=100, B=100)  // Green + Blue
-  color(color=3,W=0, R=100, G=0, B=100)    // Red + Blue
-  color(color=4,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
-  color(color=5,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
-  color(color=6,W=0, R=0,   G=100, B=100)  // Green + Blue
-  color(color=7,W=0, R=100, G=0, B=100)    // Red + Blue (again)
+  defineColor(color=0,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
+  defineColor(color=1,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
+  defineColor(color=2,W=0, R=0,   G=100, B=100)  // Green + Blue
+  defineColor(color=3,W=0, R=100, G=0, B=100)    // Red + Blue
+  defineColor(color=4,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
+  defineColor(color=5,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
+  defineColor(color=6,W=0, R=0,   G=100, B=100)  // Green + Blue
+  defineColor(color=7,W=0, R=100, G=0, B=100)    // Red + Blue (again)
   
   here:
   Strip.solid(color=0);
@@ -111,8 +111,8 @@ function init() {
   // The D3 area is the gear basket doors. It has 100 RGBW pixels (50 on each)
   configure(out=D3,length=100,hasWhite=false)
   
-  color(color=0,W=0, R=0, G=0, B=0)    
-  color(color=1,W=0, R=0,   G=100, B=100) 
+  defineColor(color=0,W=0, R=0, G=0, B=0)    
+  defineColor(color=1,W=0, R=0,   G=100, B=100) 
   
   Strip.solid(color=0)
 
@@ -172,10 +172,10 @@ function init() {
   // The D2 area is the text grid plate. It has 8x8x3 pixels.
   configure(out=D2,length=192,hasWhite=false)
   
-  color(color=0, W=0, R=90,  G=90,   B=90)      
-  color(color=1, W=0, R=0,   G=0,    B=100)    
-  color(color=2, W=0, R=100, G=0,    B=0)  
-  color(color=3, W=0, R=100, G=100,   B=0) 
+  defineColor(color=0, W=0, R=90,  G=90,   B=90)      
+  defineColor(color=1, W=0, R=0,   G=0,    B=100)    
+  defineColor(color=2, W=0, R=100, G=0,    B=0)  
+  defineColor(color=3, W=0, R=100, G=100,   B=0) 
   
   pattern(number=5) {
 	  11111
