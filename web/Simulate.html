@@ -166,26 +166,6 @@ function doorClose() {
   <svg id="oreoZoe_D2" width="350" height="130"></svg>
   <br>
   <textarea id="code_D2" style="width:100ch;height:60ch">
-  
-pattern 5 = {
-  "11111",
-  "1....",
-  "1....",
-  "11111",
-  "....1",
-  "....1",
-  "11111"
-}
-
-pattern 8 = {
-  "22222",
-  "2...2",
-  "2...2",
-  "22222",
-  "2...2",
-  "2...2",
-  "22222"
-}
 
 function init() {
 
@@ -196,6 +176,26 @@ function init() {
   color(color=1, W=0, R=0,   G=0,    B=100)    
   color(color=2, W=0, R=100, G=0,    B=0)  
   color(color=3, W=0, R=100, G=100,   B=0) 
+  
+  pattern(number=5) {
+	  11111
+	  1....
+	  1....
+	  11111
+	  ....1
+	  ....1
+	  11111
+  }
+
+  pattern(number=8) {
+	  22222
+	  2...2
+	  2...2
+	  22222
+	  2...2
+	  2...2
+	  22222
+  }
   
   Strip.solid(color=0)
   

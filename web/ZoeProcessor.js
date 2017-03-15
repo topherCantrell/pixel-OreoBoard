@@ -14,31 +14,7 @@ function initZoeProcessor(stripElement,script) {
     var running;
 	
 	var my = {};	
-	
-	function parsePatterns() {
-	    var pos = 0;	    
-	    var ret = {};
-	    while(pos<lines.length) {
-	        var line = lines[pos];
-	        ++pos;
-	        if(line.startsWith("FUNCTION ")) break;
-	        
-	        if(line.startsWith("PATTERN ")) {
-	            var i = line.indexOf("=");
-	            var pn = line.substring(8,i).trim();
-	            ret[pn] = [];
-	            while(lines[pos]!=="}") {
-	                i = lines[pos].indexOf('"');	                
-	                var j = lines[pos].indexOf('"',i+1);
-	                ret[pn].push(lines[pos].substring(i+1,j));
-	                ++pos;
-	            }
-	        }	        
-	        
-	    }
-	    return ret;
-	}
-			
+					
 	function substituteVars(line) {
 		while(true) {
 			var i = line.indexOf("[");
@@ -358,6 +334,19 @@ function initZoeProcessor(stripElement,script) {
 					blue : getParameter('B',parts[1],"colorByte")
 				};
 				cb();
+			} 
+			
+			else if(parts[0]==='PATTERN') {
+			    var num = getParameter('NUMBER',parts[1],'number');
+			    if(patterns[num]!==undefined) throw "Pattern number "+num+" is already defined.";
+			    patterns[num] = [];
+			    while(lines[scriptPos]!=='}') {
+			        patterns[num].push(lines[scriptPos]);
+			        ++scriptPos;
+			    }
+			    
+			    ++scriptPos;			    
+			    cb();
 			}
 			
 			else if(parts[0]==='STRIP.SET') {
@@ -456,7 +445,7 @@ function initZoeProcessor(stripElement,script) {
 	    callStack = [];
 	    functionStartStack = [];
 	    variables = {};
-	    patterns = parsePatterns();
+	    patterns = {};
 	};
 	
 	my.reset(script);
