@@ -3,11 +3,12 @@ pixel streaming code to reside within the same cog.
 
 -- HEADER AREA --
 
-DD LL WW 00        ; Configuration: out=DD, length=LL, hasWhite=WW
-.. .. .. ..        ; Color palette (256x4 bytes) (word aligned)
+DD LL WW NN        ; Configuration: out=DD, length=LL, hasWhite=WW, NN=numberOfVariables
+.. .. .. ..        ; 32 bytes for event text input (1st byte is the trigger)
+.. .. .. ..        ; Color palette (64x4 bytes) (word aligned)
+.. .. .. ..        ; 16 two-byte pointers to patterns
 .. .. .. ..        ; 32 call-stack slots
 .. .. .. ..        ; Pixel buffer (1 byte per pixel for LL pixels)
-NN                 ; Number of variables
 .. .. .. ..        ; Two bytes for each variable
 "INIT" 00 PP PP    ; Event text, null terminator, pointer
 "PARTY" 00 PP PP   ; Event text, null terminator, pointer

@@ -54,9 +54,19 @@ function makeSquare(x,y,snum) {
 	NEO.makeStrip(0,16);
 }
 
-makeSquare(20, 10,  0);
-makeSquare(370,10,  76);
-makeSquare(720,10, 152);
+NEO.setCursor(320,13,1,4,24,0);
+NEO.makeStrip(3,11);
+NEO.makeStrip(2,11);
+NEO.setCursor(NEO.cursor.x+24,NEO.cursor.y-24);
+NEO.makeStrip(1,11);
+
+NEO.setCursor(730,13);
+NEO.makeStrip(1,11);
+NEO.makeStrip(2,11);
+NEO.setCursor(NEO.cursor.x-24,NEO.cursor.y-24);
+NEO.makeStrip(3,11);
+
+makeSquare(370,10,  66);
 
 NEO.setCursor(10,10, 2,4,15,0);
 for(var z=0;z<3;++z) {
