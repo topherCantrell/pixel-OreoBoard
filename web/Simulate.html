@@ -100,7 +100,7 @@ function alternate() {
   
   <hr>
   <h1>Doors</h1>
-  <svg id="oreoZoe_D3" width="1100" height="130"></svg>
+  <svg id="oreoZoe_D3" width="1100" height="100"></svg>
   <br>
   <textarea id="code_D3" style="width:100ch;height:60ch">
 function init() {
@@ -109,7 +109,7 @@ function init() {
   var cur2
 
   // The D3 area is the gear basket doors. It has 100 RGBW pixels (50 on each)
-  configure(out=D3,length=100,hasWhite=false)
+  configure(out=D3,length=86,hasWhite=false)
   
   defineColor(color=0,W=0, R=0, G=0, B=0)    
   defineColor(color=1,W=0, R=0,   G=100, B=100) 
@@ -121,7 +121,7 @@ function init() {
 function doorOpen() {
 
   [cur] = 0
-  [cur2] = 50
+  [cur2] = 43
 
   here:
   Strip.set(pixel=[cur],color=1)
@@ -130,14 +130,14 @@ function doorOpen() {
   [cur] = [cur] + 1
   [cur2] = [cur2] + 1
   
-  if([cur]<50)
+  if([cur]<43)
     goto(here)
       
 }
 
 function doorClose() {
-  [cur] = 49
-  [cur2] = 99
+  [cur] = 42
+  [cur2] = 85
 
   here:
   Strip.set(pixel=[cur],color=0)
