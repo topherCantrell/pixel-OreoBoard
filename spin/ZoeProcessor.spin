@@ -9,6 +9,19 @@ DAT
 
 ZoeCOG
 
+' TODO:
+' - defcolor
+' - variable parameters (including pause)
+' - math
+' - logic (IF)
+' - Strip.solid
+' - define pattern
+' - Strip.drawPattern
+'
+' Other commands:
+' - alternate(startColor,numColors)
+' - pulse(ZOE function ... startColor, numColors, pause, passes)
+
 
 ' Setup the I/O pin
                
@@ -49,17 +62,104 @@ ZoeCOG
 
         add     p,par_pixCount           ' Point to ...
         mov     events,p                 ' ... event table
+                
+mainLoop
+        rdbyte  c,eventInput wz          ' A new event?        
+  if_nz jmp     #doEvent                 ' Yes ... go start it
+        cmp     running, #1  wz          ' Are we running?
+  if_nz jmp     #mainLoop                ' No ... wait for an event         
+        mov     c, ONE_MSEC              ' Time to kill for 1 MSec
+        add     c, cnt                   ' Offset from now
+        waitcnt c,c                      ' Wait for 1 MSec  
+        djnz    pauseCounter, #mainLoop  ' Wait all 1MSEC tics
 
-        ' Run till a pause
-        ' Update the screen
-        ' Check the input buffer for an event and pause or stop
+command
+        rdbyte  c,programCounter         ' Next ... 
+        add     programCounter,#1        ' ... opcode
 
+notOp00 djnz    c,#notOp01
+' OPCODE 01 mm ll  PAUSE
+        call    #ReadWord                     ' Get the ...
+        mov     pauseCounter,tmp              ' ... pause counter value
+        call    #UpdateDisplay                ' Draw the display
+        jmp     #mainLoop                     ' Back to wait for pause
+                
+notOp01 djnz    c,#notOp02  
+' OPCODE 02 aa bb  SET pixel A to color B            
+        rdbyte  p,programCounter              ' Get the ...
+        add     programCounter,#1             ' ... pixel number
+        add     p,par_buffer                  ' Offset into memory
+        rdbyte  c,programCounter              ' Get the ...
+        add     programCounter,#1             ' ... color value
+        wrbyte  c,p                           ' Set the pixel value
+        jmp     #command                      ' Run untill pause
 
-        ' Fetch command byte
-        ' Decode
+notOp02 djnz    c,#notOp03
+' OPCODE 03 mm ll  GOTO
+        call    #ReadWord                     ' Get the relative offset
+        add     programCounter,tmp            ' Add in the jump
+        and     programCounter,C_FFFF         ' Mask to a word
+        jmp     #command                      ' Run untill pause
+
+notOp03
+        mov     c,#%11110001                  ' Unknown ...
+        jmp     #ErrorInC                     ' ... opcode
+
+ReadWord
+        rdbyte  tmp,programCounter            ' Read ...
+        add     programCounter,#1             ' ... MSB
+        shl     tmp,#8                        ' Into position
+        rdbyte  tmp2,programCounter           ' Read ...
+        add     programCounter,#1             ' ... LSB
+        or      tmp,tmp2                      ' Result is in tmp
+ReadWord_ret
+        ret                                   
+
+' -------------------------------------------------------------------------------------------------
         
-        mov     c,#%10110101       
+doEvent
+        mov     p,events                 ' Pointer to events
+doEvent2
+        mov     p2,eventInput            ' Input buffer
+        add     p2,#1                    ' Skip over trigger
 
+        rdbyte  c,p wz                   ' Next in event table
+        cmp     c,#$FF wz                ' Reached the end of the event table?
+  if_nz jmp     #thisWord                ' No ... check the word
+        wrbyte  ZERO,eventInput          ' Clear the trigger
+        jmp     #mainLoop                ' Wait for next event
+
+nextWord  
+        cmp     c,#0 wz                  ' End of the current word in the table?
+ if_z   jmp     #ne1                     ' Yes ... get ready for next check
+        add     p,#1                     ' No ... read ...
+        rdbyte  c,p                      ' ... next from table
+        jmp     #nextWord                ' Check for ending now
+        
+ne1     add     p,#3                     ' Skip terminator plus pointer
+        jmp     #doEvent2                ' Next word
+
+thisWord
+        rdbyte  c,p                      ' Next from ...
+        add     p,#1                     ' ... table
+        rdbyte  val,p2                   ' Next from ...          
+        add     p2,#1                    ' ... input
+        cmp     c,val wz                   ' Are they the same?
+  if_nz jmp     #nextWord                ' No ... next table entry  
+        cmp     c,#0 wz                  ' Terminator?
+  if_nz jmp     #thisWord                ' No ... keep checking
+
+       ' We found an event handler
+
+        mov     programCounter,p         ' Routine reads from programCounter
+        call    #ReadWord                ' Get the entry address
+        add     tmp,events               ' Offset from the event table
+        mov     programCounter,tmp       ' Start of event handler        
+        wrbyte  ZERO,eventInput          ' Clear the trigger   
+        mov     running,#1               ' Code is now running 
+        jmp     #command                 ' Run till pause
+        
+' -------------------------------------------------------------------------------------------------   
 
 ErrorInC
         mov      p, par_palette
@@ -67,20 +167,19 @@ ErrorInC
         add      p,#4
         nop
         wrlong   ERRCOLOR1,p
-        mov      val,#8
-        shl      c,#24
+        mov      val,#16
+        shl      c,#16
         mov      p, par_buffer
 errloop shl      c,#1 wc
   if_c  wrbyte   ONE,p
   if_nc wrbyte   ZERO,p
         add      p,#1
         djnz     val,#errloop
-
         call     #UpdateDisplay
-errinf  jmp      #errinf
-ONE     long     1
-ZERO    long     0  
+        '
+errinf  jmp      #errinf  
 
+' -------------------------------------------------------------------------------------------------   
 
 UpdateDisplay
         mov     p,par_buffer             ' Start of pixel buffer
@@ -143,6 +242,10 @@ loop5   djnz    c,#loop5                 '
 sendDone_ret                             '
         ret                              ' Done  
 
+' -------------------------------------------------------------------------------------------------     
+
+running          long 0          ' 1 if there is an event running
+pauseCounter     long 0          ' number of tics left in pause
 eventInput       long 0          ' Pointer to event input
 patterns         long 0          ' Pointer to patterns
 callStack        long 0          ' Pointer to callstack
@@ -155,14 +258,24 @@ par_buffer       long 0          ' Pointer to the pixel data buffer
 par_pixCount     long 0          ' Number of pixels
 numVars          long 0          ' Number of variables on the strand
 pn               long 0          ' Pin number bit mask
-c                long 0          ' Counter used in delay
-p                long 0          ' Pointer into pixel buffer
-val              long 0          ' Shifting pixel value       
-bitCnt           long 0          ' Counter for bit shifting
-pixCnt           long 0          ' Counter for pixels in the strip
 numBitsToSend    long 0          ' Either 32 bits (RGBW) or 24 bits (RGB)
 '
-C_RES            long $4B0       ' Wait count for latching the LEDs
+c                long 0          ' Temporary
+p                long 0          ' Temporary
+val              long 0          ' Temporary
+p2               long 0          ' Temporary
+bitCnt           long 0          ' Temporary for bit shifting
+pixCnt           long 0          ' Temporary for pixels in the strip
+tmp              long 0          ' Temporary
+tmp2             long 0          ' Temporary
 '
-ERRCOLOR0        long $00_00_00_08
-ERRCOLOR1        long $00_08_08_08
+C_RES            long $4B0         ' Wait count for latching the LEDs
+C_FFFF           long $FFFF        ' Used to mask 2-byte signed numbers
+ONE              long 1            ' Used to WRBYTE
+ZERO             long 0            ' Used to WRBYTE
+ERRCOLOR0        long $00_00_00_08 ' Color for 0 bits in error
+ERRCOLOR1        long $00_08_08_08 ' Color for 1 bits in error
+ONE_MSEC         long 80_000       ' 80_000_000 clocks in a second / 1000
+
+      FIT
+      
