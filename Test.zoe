@@ -1,7 +1,7 @@
 function init() {
 
   // The D1 area is the bottom of the robot
-  configure(out=D1,length=142,hasWhite=true)
+  configure (out =D1, length=142, hasWhite=true)
 	
   var first
   var last
@@ -21,9 +21,9 @@ function init() {
   defineColor(color=7,W=0, R=100, G=0, B=100)    // Red + Blue (again)
   
   here:
-  Strip.solid(color=0);
+  solid(color=0);
   Pause(time=1000);
-  Strip.solid(color=1);
+  solid(color=1);
   Pause(time=1000);
   goto(here)
   

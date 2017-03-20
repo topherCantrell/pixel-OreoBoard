@@ -104,12 +104,18 @@ public class ZoeSpin {
 			ret.add("");
 			ret.add("'"+e.name+"_handler");
 			for(ZoeLine line : e.lines) {
-				if(line.data == null) {
+				if(line.label!=null) {
 					ret.add("  '"+line.label+":");
-				} else {
-					String data = getSpinString(line.data);
-					ret.add(data+" ' "+line.originalText);
+					continue;
 				}
+				if(line.data == null) {
+					ret.add("  '"+line.originalText);
+					continue;
+				}
+				
+				String data = getSpinString(line.data);
+				ret.add(data+" ' "+line.originalText);
+				
 			}
 		}
 		
