@@ -1,5 +1,6 @@
 package oreoboard;
 
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -47,7 +48,8 @@ public class Zoe {
 		for(ZoeLine z : lines) {
 			if(z.command.startsWith("FUNCTION ")) {
 				if(cur!=null) {
-					cur.lines.remove(cur.lines.size()-1);					
+					ZoeLine last = cur.lines.get(cur.lines.size()-1);
+					last.command = "RETURN";									
 				}
 				cur = new ZoeEvent();
 				int i = z.command.indexOf("(");
@@ -64,17 +66,19 @@ public class Zoe {
 			}
 		}
 		if(cur!=null) {
-			cur.lines.remove(cur.lines.size()-1);
+			ZoeLine last = cur.lines.get(cur.lines.size()-1);
+			last.command = "RETURN";		
 		}
 		
 		// Two passes ... first to make labels
 		int origin = 0;
-		for(ZoeEvent event : events) {
+		for(ZoeEvent event : events) {			
 			assemble(origin,event,true);
 			origin = origin+event.codeLength;
 		}
 		origin = 0;
 		for(ZoeEvent event : events) {
+			event.origin = origin;
 			assemble(origin,event,false);
 			origin = origin+event.codeLength;
 		}
@@ -121,23 +125,31 @@ public class Zoe {
 		} else {
 			value = Integer.parseInt(vs);
 		}
+		addWord(data,value);
+	}
+	
+	void addWord(List<Integer> data, int value) {
 		data.add((value>>8)&0xFF);
 		data.add(value&0xFF);
 	}
 	
 	public void assemble(int origin, ZoeEvent event,boolean firstPass) {
-		// Return the origin past all this data
+		int gotoFailLabelNum = 0;
+		event.origin = origin;
+		
 		event.codeLength = 0;
-		event.labels.clear();
-		for(ZoeLine line : event.lines) {
+		for(int zp = 0;zp<event.lines.size();++zp) {
+			ZoeLine line = event.lines.get(zp);		
 			
 			try {
 			
 				if(line.label!=null) {
-					if(event.labels.containsKey(line.label)) {
-						throw new CompileException("Label '"+line.label+"' is already defined in function '"+event.name+"'.");
+					if(firstPass) {
+						if(event.labels.containsKey(line.label)) {
+							throw new CompileException("Label '"+line.label+"' is already defined in function '"+event.name+"'.");
+						}
+						event.labels.put(line.label, origin+event.codeLength);
 					}
-					event.labels.put(line.label, origin+event.codeLength);
 					continue;
 				}
 				
@@ -154,7 +166,14 @@ public class Zoe {
 					continue;
 				}
 				
+				if(line.command.equals("RETURN")) {
+					line.data = new ArrayList<Integer>();
+					line.data.add(8);event.codeLength+=1;					
+					continue;
+				}
+				
 				if(line.command.startsWith("[")) {
+					line.data = new ArrayList<Integer>();
 					int j = line.command.indexOf("]",1);
 					String dest = line.command.substring(1, j);
 					String op = line.command.substring(j+1).trim();
@@ -169,20 +188,18 @@ public class Zoe {
 					for(x=0;x<MATHOPS.length;++x) {
 						i = op.indexOf(MATHOPS[x]);
 						if(i>=0) break;
-					}
-					
-					line.data = new ArrayList<Integer>();
+					}					
 					
 					if(i<0) {
-						line.data.add(0x04);
-						line.data.add(vn);
-						addParam(line.data,op);
+						line.data.add(0x04);event.codeLength+=1;
+						line.data.add(vn);event.codeLength+=1;
+						addParam(line.data,op);event.codeLength+=2;
 					} else {
-						line.data.add(0x05);
-						line.data.add(vn);
-						line.data.add(MATHOPSVAL[x]);
-						addParam(line.data,op.substring(0, i).trim());
-						addParam(line.data,op.substring(i+MATHOPS[x].length()).trim());
+						line.data.add(0x05);event.codeLength+=1;
+						line.data.add(vn);event.codeLength+=1;
+						line.data.add(MATHOPSVAL[x]);event.codeLength+=1;
+						addParam(line.data,op.substring(0, i).trim());event.codeLength+=2;
+						addParam(line.data,op.substring(i+MATHOPS[x].length()).trim());event.codeLength+=2;						
 					}
 					
 					continue;
@@ -190,7 +207,94 @@ public class Zoe {
 				
 				// Commands without white spacing
 				String command = line.command.replaceAll(" ", "");
-				List<String[]> params = parseParams(command);
+				
+				if(command.startsWith("IF(")) {
+					line.data = new ArrayList<Integer>();
+					int i = command.indexOf(")");
+					String op = command.substring(3, i);
+					i = -1;
+					int x;
+					for(x=0;x<LOGICOPS.length;++x) {
+						i = op.indexOf(LOGICOPS[x]);
+						if(i>=0) break;
+					}
+					if(i<0) {
+						throw new CompileException("Excpected a logic operator in expression.");
+					}
+					String left = op.substring(0,i);
+					String right = op.substring(i+LOGICOPS[x].length());
+					line.data.add(6);event.codeLength+=1;
+					String lab = "__gotoFail_"+gotoFailLabelNum;
+					++gotoFailLabelNum;
+					if(firstPass) {
+						ZoeLine failLab = new ZoeLine();
+						failLab.label = lab;
+						event.lines.add(zp+2,failLab); // No the "IF", not the next, but the one after that
+						addWord(line.data,0);event.codeLength+=2;
+					} else {
+						if(!event.labels.containsKey(lab)) {
+							throw new CompileException("INTERNAL 'IF' ERROR. Unknown label '"+lab+"'.");
+						}
+						int address = event.labels.get(lab);
+						address = address - (origin+event.codeLength+7);
+						if(address<0) address = address + 65536;
+						addWord(line.data,address); event.codeLength+=2;
+					}
+					line.data.add(LOGICOPSVAL[x]);event.codeLength+=1;
+					addParam(line.data,left);event.codeLength+=2;
+					addParam(line.data,right);event.codeLength+=2;
+					continue;
+				}
+								
+				List<String[]> params;
+				try {
+					params = parseParams(command);
+				} catch (Exception e) {
+					throw new CompileException("Syntax error '"+e.getMessage()+"'.");
+				}
+				
+				if(command.startsWith("DRAWPATTERN(")) {					
+					line.data = new ArrayList<Integer>();
+					line.data.add(0x0C);event.codeLength+=1;
+					String num = getParam(params,"NUMBER",true);
+					String x = getParam(params,"X",true);
+					String y = getParam(params,"Y",true);
+					String ofs = getParam(params,"COLOROFFSET",false);
+					if(ofs==null) ofs="0";
+					addParam(line.data,num);event.codeLength+=2;
+					addParam(line.data,x);event.codeLength+=2;
+					addParam(line.data,y);event.codeLength+=2;
+					addParam(line.data,ofs);event.codeLength+=2;
+					continue;
+				}
+				
+				if(command.startsWith("PATTERN(")) {
+					line.data = new ArrayList<Integer>();
+					String num = getParam(params,"NUMBER",true);					
+					List<String> patLines = new ArrayList<String>();
+					++zp;
+					while(true) {
+						ZoeLine s = event.lines.get(zp++);
+						if(s.command.equals("}")) break;
+						patLines.add(s.command.trim());
+					}
+					--zp;
+					int width = patLines.get(0).length();
+					int height = patLines.size();
+					line.data.add(0x0B);event.codeLength+=1;
+					line.data.add(Integer.parseInt(num));event.codeLength+=1;
+					line.data.add(width);event.codeLength+=1;
+					line.data.add(height);event.codeLength+=1;
+					for(String s : patLines) {
+						for(int x=0;x<width;++x) {
+							char c = s.charAt(x);
+							if(c=='.') c='0';
+							line.data.add(c-'0');event.codeLength+=1;
+						}
+					}
+					
+					continue;
+				}
 				
 				if(command.startsWith("CONFIGURE(")) {
 					String dd = getParam(params,"OUT",true);				
@@ -228,35 +332,85 @@ public class Zoe {
 					String r = getParam(params,"R",true);
 					String g = getParam(params,"G",true);
 					String b = getParam(params,"B",true);
-					line.data.add(0x09);					
-					addParam(line.data,col);
-					addParam(line.data,w);
-					addParam(line.data,r);
-					addParam(line.data,g);
-					addParam(line.data,b);										
+					line.data.add(0x09);event.codeLength+=1;					
+					addParam(line.data,col);event.codeLength+=2;
+					addParam(line.data,w);event.codeLength+=2;
+					addParam(line.data,r);event.codeLength+=2;
+					addParam(line.data,g);event.codeLength+=2;
+					addParam(line.data,b);event.codeLength+=2;					
 					continue;
 				}
 				
 				if(command.startsWith("SOLID(")) {
 					String col = getParam(params,"COLOR",true);
-					line.data.add(0x0A);
+					line.data.add(0x0A);event.codeLength+=1;
 					if(!firstPass) {					
-						for(int x=0;x<1*2;++x) line.data.add(0);
+						for(int x=0;x<1*2;++x) {
+							line.data.add(0);event.codeLength+=1;							
+						}
 					} else {
-						addParam(line.data,col);						
+						addParam(line.data,col);event.codeLength+=2;						
 					}
+					continue;
+				}
+				
+				if(command.startsWith("SET(")) {
+					String pixel = getParam(params,"PIXEL",true);
+					String col = getParam(params,"COLOR",true);
+					line.data.add(2);event.codeLength+=1;
+					addParam(line.data,pixel);event.codeLength+=2;
+					addParam(line.data,col);event.codeLength+=2;
 					continue;
 				}
 				
 				if(command.startsWith("PAUSE(")) {
 					String tm = getParam(params,"TIME",true);
-					line.data.add(1);
-					addParam(line.data,tm);
+					line.data.add(1);event.codeLength+=1;
+					addParam(line.data,tm);event.codeLength+=2;
 					continue;
 				}
 				
 				if(command.startsWith("GOTO(")) {
-					
+					line.data.add(3);event.codeLength+=1;
+					if(firstPass) {
+						line.data.add(0);event.codeLength+=1;
+						line.data.add(0);event.codeLength+=1;
+					} else {
+						String lab = params.get(0)[1];
+						if(!event.labels.containsKey(lab)) {
+							throw new CompileException("Unknown label '"+lab+"'.");
+						}
+						int address = event.labels.get(lab);
+						address = address - (origin+event.codeLength+2);
+						if(address<0) address = address + 65536;
+						addWord(line.data,address);event.codeLength+=2;
+					}
+					continue;
+				}
+				
+				if(command.startsWith("GOSUB(")) {
+					line.data.add(7);event.codeLength+=1;
+					if(firstPass) {
+						line.data.add(0);event.codeLength+=1;
+						line.data.add(0);event.codeLength+=1;
+					} else {
+						String lab = params.get(0)[1];
+						ZoeEvent ze = null;
+						for(ZoeEvent z : events) {
+							if(z.name.equals(lab)) {
+								ze = z;
+								break;
+							}
+						}
+						if(ze==null) {
+							throw new CompileException("Unknown function '"+lab+"'.");
+						}						
+						int address = ze.origin;
+						address = address - (origin+event.codeLength+2);
+						if(address<0) address = address + 65536;
+						addWord(line.data,address);event.codeLength+=2;
+					}
+					continue;
 				}
 				
 				throw new CompileException("Unknown command '"+command+"'.");
@@ -264,20 +418,31 @@ public class Zoe {
 			} catch (CompileException e) {
 				e.problemLine = line;
 				throw e;
-			}
-									
+			}			
+												
 		}		
 		
 	}
 
-	public static void main(String[] args) throws Exception {
-		
-		Zoe zoe = new Zoe("Test.zoe");
+	public static void main(String[] args) throws Exception {		
 						
-		ZoeSpin zs = new ZoeSpin();
-				
-		String s = zs.makeSpinString(zoe);
-		System.out.println(s);
+		try {
+			Zoe zoe = new Zoe("Test.zoe");
+			ZoeSpin zs = new ZoeSpin();
+			String s = zs.makeSpinString(zoe);
+			
+			PrintWriter pw = new PrintWriter("spin/ProgramData.spin");
+			pw.println(s);
+			pw.flush();
+			pw.close();
+			
+			System.out.println(s);
+		} catch (CompileException e) {
+			System.out.println(e.problemLine.originalLine+": "+e.problemLine.originalText);
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}				
+		
 	}
 
 }

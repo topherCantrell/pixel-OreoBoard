@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class ZoeEvent {
 	
+	int origin;
 	String name;
 	int codeLength;
 	List<ZoeLine> lines = new ArrayList<ZoeLine>();

@@ -1,72 +1,46 @@
 function init() {
-
-  // The D1 area is the bottom of the robot
-  configure (out =D1, length=142, hasWhite=true)
 	
-  var first
-  var last
-  var ptr
   var x
-		
-  var cnt
-	
-  // Define two colors: 0=red, 1=blue
-  defineColor(color=0,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
-  defineColor(color=1,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
-  defineColor(color=2,W=0, R=0,   G=100, B=100)  // Green + Blue
-  defineColor(color=3,W=0, R=100, G=0, B=100)    // Red + Blue
-  defineColor(color=4,W=0, R=100, G=0, B=0)      // 100% red (no white, blue, or green) 
-  defineColor(color=5,W=0, R=0,   G=0, B=100)    // 100% blue (no white, red, or green)
-  defineColor(color=6,W=0, R=0,   G=100, B=100)  // Green + Blue
-  defineColor(color=7,W=0, R=100, G=0, B=100)    // Red + Blue (again)
   
+  // The D1 area is the bottom of the robot
+  configure (out =D1, length=192, hasWhite=false)
+	  	
+  // Define two colors: 0=red, 1=blue
+  defineColor(color=0,W=0, R=0, G=0, B=0)   
+  defineColor(color=1,W=0, R=0,   G=10, B=0)
+  defineColor(color=2,W=0, R=0,   G=10, B=10)
+  
+  pattern(number=0) {
+	  1.1
+	  .1.
+	  .1.
+  }
+  
+  drawPattern(number=0,x=6,y=3,colorOffset=0)
+  pause(time=5000)
+
+  [x] = 0
+    
   here:
-  solid(color=0);
-  Pause(time=1000);
-  solid(color=1);
-  Pause(time=1000);
+  gosub(doit)
+  
+  [x] = [x] + 1
+  if([x]>=192)
+    [x] = 0 
+
   goto(here)
   
 }
-  
-function autonomous() {
 
-  // The D1 area is the bottom of the robot. It has 228 RGBW pixels  
-        
-  [first] = 0
-  [last] = 3
-  
-  here:
-  
-  gosub(alternate)
-  pause(time=1000)
-  [first] = [first] + 1
-  [last] = [last] + 1
-  
-  if([first] < 4)
-      goto(here)
-      
-  [first] = 0
-  [last] = 3
-  
-  goto(here) 
- 
+
+function doIt() {
+
+	solid(color=0)
+	set(pixel=[x],color=1)
+	pause(time=10)
+	
 }
 
-function alternate() {
 
- [x] = 0
- [ptr] = [first]
- 
- here:
- 
- Strip.set(pixel=[x],color=[ptr])
- [ptr] = [ptr] + 1
- if([ptr] > [last])
-   [ptr] = [first]
-   
- [x] = [x] + 1
- if ([x]<228) 
-   goto(here);
- 
-}  
+
+  

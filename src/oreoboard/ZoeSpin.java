@@ -29,7 +29,13 @@ public class ZoeSpin {
 	}
 	
 	public List<String> makeSpin(Zoe zoe) {		
+		
 		List<String> ret = new ArrayList<String>();
+		
+		ret.add("pub getProgram");
+		ret.add("  return @zoeProgram");
+		ret.add("");
+		ret.add("DAT");
 		
 		ret.add("zoeProgram");
 		ret.add("");
