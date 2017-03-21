@@ -1,0 +1,9 @@
+function init() {
+
+	configure (out=D4, length=8, hasWhite=false)
+	
+	here:
+		pause(time=1000)
+		goto(here) 
+  
+}

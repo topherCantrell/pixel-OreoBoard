@@ -335,8 +335,8 @@ public class Zoe {
 					line.data.add(0x09);event.codeLength+=1;					
 					addParam(line.data,col);event.codeLength+=2;
 					addParam(line.data,w);event.codeLength+=2;
-					addParam(line.data,r);event.codeLength+=2;
 					addParam(line.data,g);event.codeLength+=2;
+					addParam(line.data,r);event.codeLength+=2;
 					addParam(line.data,b);event.codeLength+=2;					
 					continue;
 				}
@@ -344,13 +344,7 @@ public class Zoe {
 				if(command.startsWith("SOLID(")) {
 					String col = getParam(params,"COLOR",true);
 					line.data.add(0x0A);event.codeLength+=1;
-					if(!firstPass) {					
-						for(int x=0;x<1*2;++x) {
-							line.data.add(0);event.codeLength+=1;							
-						}
-					} else {
-						addParam(line.data,col);event.codeLength+=2;						
-					}
+					addParam(line.data,col);event.codeLength+=2;					
 					continue;
 				}
 				
@@ -426,17 +420,43 @@ public class Zoe {
 
 	public static void main(String[] args) throws Exception {		
 						
-		try {
-			Zoe zoe = new Zoe("Test.zoe");
-			ZoeSpin zs = new ZoeSpin();
-			String s = zs.makeSpinString(zoe);
+		try {			
 			
-			PrintWriter pw = new PrintWriter("spin/ProgramData.spin");
+			ZoeSpin zs = new ZoeSpin();
+			
+			Zoe zoe = new Zoe("D1.zoe");
+			String s = zs.makeSpinString(zoe);			
+			PrintWriter pw = new PrintWriter("spin/ProgramDataD1.spin");
 			pw.println(s);
 			pw.flush();
-			pw.close();
-			
+			pw.close();			
 			System.out.println(s);
+			
+			zoe = new Zoe("D2.zoe");
+			s = zs.makeSpinString(zoe);			
+			pw = new PrintWriter("spin/ProgramDataD2.spin");
+			pw.println(s);
+			pw.flush();
+			pw.close();			
+			System.out.println(s);
+			
+			zoe = new Zoe("D3.zoe");
+			s = zs.makeSpinString(zoe);			
+			pw = new PrintWriter("spin/ProgramDataD3.spin");
+			pw.println(s);
+			pw.flush();
+			pw.close();			
+			System.out.println(s);
+			
+			zoe = new Zoe("D4.zoe");
+			s = zs.makeSpinString(zoe);			
+			pw = new PrintWriter("spin/ProgramDataD4.spin");
+			pw.println(s);
+			pw.flush();
+			pw.close();			
+			System.out.println(s);
+			
+			
 		} catch (CompileException e) {
 			System.out.println(e.problemLine.originalLine+": "+e.problemLine.originalText);
 			System.out.println(e.getMessage());

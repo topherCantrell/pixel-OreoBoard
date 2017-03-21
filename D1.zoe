@@ -16,7 +16,7 @@ function init() {
 	  .1.
   }
   
-  drawPattern(number=0,x=6,y=3,colorOffset=0)
+  drawPattern(number=0,x=6,y=3,colorOffset=1)
   pause(time=5000)
 
   [x] = 0
@@ -30,6 +30,20 @@ function init() {
 
   goto(here)
   
+}
+
+function [BLUE]() {
+	solid(color=2)
+	here:
+		pause(time=1000)
+		goto(here)
+}
+
+function [GREEN]() {
+	solid(color=1)
+	here:
+		pause(time=1000)
+		goto(here)
 }
 
 
