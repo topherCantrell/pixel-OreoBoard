@@ -1,3 +1,4 @@
+
 function init() {
 	
   var x
@@ -7,53 +8,50 @@ function init() {
 	  	
   // Define two colors: 0=red, 1=blue
   defineColor(color=0,W=0, R=0, G=0, B=0)   
-  defineColor(color=1,W=0, R=0,   G=10, B=0)
-  defineColor(color=2,W=0, R=0,   G=10, B=10)
+  defineColor(color=1,W=0, R=100,   G=0, B=0)
+  defineColor(color=2,W=0, R=150,   G=100, B=10)
   
   pattern(number=0) {
-	  1.1
-	  .1.
-	  .1.
+	  11111
+	  1....
+	  1....
+	  .111.
+	  ....1
+	  ....1
+	  11111
+  }
+   
+   pattern(number=1){
+  22222
+  2...2
+  2...2
+  .222.
+  2...2
+  2...2
+  22222
   }
   
-  drawPattern(number=0,x=6,y=3,colorOffset=1)
+
+  
+  
+  
+  
+  drawPattern(number=0,x=0,y=0)
+  drawPattern(number=1,x=6,y=0)
+  drawPattern(number=0,x=12,y=0)
+  drawPattern(number=1,x=18,y=0)
   pause(time=5000)
 
-  [x] = 0
+
     
   here:
-  gosub(doit)
   
-  [x] = [x] + 1
-  if([x]>=192)
-    [x] = 0 
 
   goto(here)
   
 }
 
-function [BLUE]() {
-	solid(color=2)
-	here:
-		pause(time=1000)
-		goto(here)
-}
 
-function [GREEN]() {
-	solid(color=1)
-	here:
-		pause(time=1000)
-		goto(here)
-}
-
-
-function doIt() {
-
-	solid(color=0)
-	set(pixel=[x],color=1)
-	pause(time=10)
-	
-}
 
 
 
