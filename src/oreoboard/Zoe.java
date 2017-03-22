@@ -28,6 +28,7 @@ public class Zoe {
 		List<ZoeLine> lines = new ArrayList<ZoeLine>();
 		for(String r : raws) {
 			ZoeLine z = new ZoeLine();
+			z.fileName = filename;
 			z.originalText = r;
 			z.originalLine = ln;
 			++ln;
@@ -458,10 +459,10 @@ public class Zoe {
 			
 			
 		} catch (CompileException e) {
-			System.out.println(e.problemLine.originalLine+": "+e.problemLine.originalText);
+			System.out.println("at ("+e.problemLine.fileName+"):"+e.problemLine.originalLine+" "+e.problemLine.originalText);
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-		}				
+		}			
 		
 	}
 

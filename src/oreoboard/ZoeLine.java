@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ZoeLine {
 	
+	String fileName;
 	int originalLine;
 	String originalText;
 	

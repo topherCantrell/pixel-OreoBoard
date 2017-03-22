@@ -1,5 +1,6 @@
 function init() {
 
+    // The D4 area is unused
 	configure (out=D4, length=8, hasWhite=false)
 	
 	here:

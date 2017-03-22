@@ -1,10 +1,19 @@
 
 function init() {
 	
+	// [ModeAutonomousRed]   Entering autonomous mode on RED team
+	// [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
+	// [ModeTeleop]          Entering teleop mode
+    // [GearBasketOpen]      Open the gear basket
+	// [GearBasketClose]     Close the gear basket		
+	// [StopClimb]           Climber stop
+	// [ClimbUp]             Climb up
+	// [ClimbDown]           Climb down
+	
   var x
   
-  // The D1 area is the bottom of the robot
-  configure (out =D1, length=192, hasWhite=false)
+  // The D1 area is the pixel grid
+  configure (out=D1, length=192, hasWhite=false)
 	  	
   // Define two colors: 0=red, 1=blue
   defineColor(color=0,W=0, R=0, G=0, B=0)   

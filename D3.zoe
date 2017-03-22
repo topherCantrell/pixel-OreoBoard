@@ -1,5 +1,6 @@
 function init() {
 
+    // D3 is the gear basket doors
 	configure (out=D3, length=8, hasWhite=false)
 	
 	here:

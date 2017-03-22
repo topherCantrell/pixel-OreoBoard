@@ -1,5 +1,6 @@
 function init() {
 
+    // D2 is the bottom of the robot
 	configure (out=D2, length=8, hasWhite=false)
 	
 	here:
