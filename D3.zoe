@@ -1,10 +1,20 @@
+// The robot sends these commands:
+// [ModeAutonomousRed]   Entering autonomous mode on RED team
+// [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
+// [ModeTeleop]          Entering teleop mode
+// [GearBasketOpen]      Open the gear basket
+// [GearBasketClose]     Close the gear basket		
+// [StopClimb]           Climber stop
+// [ClimbUp]             Climb up
+// [ClimbDown]           Climb down
+
 function init() {
 
     // D3 is the gear basket doors
 	configure (out=D3, length=8, hasWhite=false)
 	
 	here:
-		pause(time=1000)
-		goto(here) 
+	pause(time=1000)
+	goto(here) 
   
 }

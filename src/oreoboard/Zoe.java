@@ -8,6 +8,9 @@ import java.util.List;
 
 public class Zoe {
 	
+	List<ZoeCommand> LINECOMMANDS = new ArrayList<ZoeCommand>();
+	List<ZoeCommand> PARAMCOMMANDS = new ArrayList<ZoeCommand>();
+	
 	boolean hasWhite = true;
 	int numPixels = 8*8*3;
 	int pinNumber = 15;
@@ -22,6 +25,14 @@ public class Zoe {
 	int [] LOGICOPSVAL = {0x0A, 0x05, 0x03, 0x0E, 0x01, 0x0C};
 			
 	public Zoe(String filename) throws Exception {
+		
+		LINECOMMANDS.add(new ZoeCommandRETURN(this));
+		
+		PARAMCOMMANDS.add(new ZoeCommandSOLID(this));
+		PARAMCOMMANDS.add(new ZoeCommandPAUSE(this));
+		PARAMCOMMANDS.add(new ZoeCommandSET(this));
+		PARAMCOMMANDS.add(new ZoeCommandGOTO(this));
+		PARAMCOMMANDS.add(new ZoeCommandGOSUB(this));
 		
 		List<String> raws = Files.readAllLines(Paths.get(filename));
 		int ln = 1;
@@ -140,9 +151,14 @@ public class Zoe {
 		
 		event.codeLength = 0;
 		for(int zp = 0;zp<event.lines.size();++zp) {
-			ZoeLine line = event.lines.get(zp);		
 			
-			try {
+			ZoeLine line = event.lines.get(zp);
+			String commandNospace = "";
+			if(line.command!=null) {
+				commandNospace = line.command.replaceAll(" ", "");
+			}
+			
+			try {				
 			
 				if(line.label!=null) {
 					if(firstPass) {
@@ -154,6 +170,15 @@ public class Zoe {
 					continue;
 				}
 				
+				boolean found = false;
+				for(ZoeCommand c : LINECOMMANDS) {
+					if(c.assemble(firstPass, origin, null, null, event, line)) {
+						found = true;
+						break;
+					}
+				}
+				if(found) continue;
+				
 				// Commands with white spacing
 				
 				if(line.command.startsWith("VAR ")) {
@@ -164,12 +189,6 @@ public class Zoe {
 						}
 						variables.add(vname);
 					} 
-					continue;
-				}
-				
-				if(line.command.equals("RETURN")) {
-					line.data = new ArrayList<Integer>();
-					line.data.add(8);event.codeLength+=1;					
 					continue;
 				}
 				
@@ -206,13 +225,10 @@ public class Zoe {
 					continue;
 				}
 				
-				// Commands without white spacing
-				String command = line.command.replaceAll(" ", "");
-				
-				if(command.startsWith("IF(")) {
+				if(commandNospace.startsWith("IF(")) {
 					line.data = new ArrayList<Integer>();
-					int i = command.indexOf(")");
-					String op = command.substring(3, i);
+					int i = commandNospace.indexOf(")");
+					String op = commandNospace.substring(3, i);
 					i = -1;
 					int x;
 					for(x=0;x<LOGICOPS.length;++x) {
@@ -247,14 +263,15 @@ public class Zoe {
 					continue;
 				}
 								
+				// Commands with parameters
 				List<String[]> params;
 				try {
-					params = parseParams(command);
+					params = parseParams(commandNospace);
 				} catch (Exception e) {
 					throw new CompileException("Syntax error '"+e.getMessage()+"'.");
 				}
 				
-				if(command.startsWith("DRAWPATTERN(")) {					
+				if(commandNospace.startsWith("DRAWPATTERN(")) {					
 					line.data = new ArrayList<Integer>();
 					line.data.add(0x0C);event.codeLength+=1;
 					String num = getParam(params,"NUMBER",true);
@@ -269,7 +286,7 @@ public class Zoe {
 					continue;
 				}
 				
-				if(command.startsWith("PATTERN(")) {
+				if(commandNospace.startsWith("PATTERN(")) {
 					line.data = new ArrayList<Integer>();
 					String num = getParam(params,"NUMBER",true);					
 					List<String> patLines = new ArrayList<String>();
@@ -297,7 +314,7 @@ public class Zoe {
 					continue;
 				}
 				
-				if(command.startsWith("CONFIGURE(")) {
+				if(commandNospace.startsWith("CONFIGURE(")) {
 					String dd = getParam(params,"OUT",true);				
 					switch(dd) {
 					case "D1":
@@ -319,14 +336,10 @@ public class Zoe {
 					String hsw = getParam(params,"HASWHITE",true);
 					this.hasWhite = Boolean.parseBoolean(hsw);			
 					continue;
-				}
-	
-				
-				// Everything here down generates opcodes
-				
-				line.data = new ArrayList<Integer>();
+				}								
 							
-				if(command.startsWith("DEFINECOLOR(")) {
+				if(commandNospace.startsWith("DEFINECOLOR(")) {
+					line.data = new ArrayList<Integer>();
 					String col = getParam(params,"COLOR",true);
 					String w = getParam(params,"W",hasWhite);
 					if(w==null) w="0";
@@ -342,73 +355,16 @@ public class Zoe {
 					continue;
 				}
 				
-				if(command.startsWith("SOLID(")) {
-					String col = getParam(params,"COLOR",true);
-					line.data.add(0x0A);event.codeLength+=1;
-					addParam(line.data,col);event.codeLength+=2;					
-					continue;
-				}
-				
-				if(command.startsWith("SET(")) {
-					String pixel = getParam(params,"PIXEL",true);
-					String col = getParam(params,"COLOR",true);
-					line.data.add(2);event.codeLength+=1;
-					addParam(line.data,pixel);event.codeLength+=2;
-					addParam(line.data,col);event.codeLength+=2;
-					continue;
-				}
-				
-				if(command.startsWith("PAUSE(")) {
-					String tm = getParam(params,"TIME",true);
-					line.data.add(1);event.codeLength+=1;
-					addParam(line.data,tm);event.codeLength+=2;
-					continue;
-				}
-				
-				if(command.startsWith("GOTO(")) {
-					line.data.add(3);event.codeLength+=1;
-					if(firstPass) {
-						line.data.add(0);event.codeLength+=1;
-						line.data.add(0);event.codeLength+=1;
-					} else {
-						String lab = params.get(0)[1];
-						if(!event.labels.containsKey(lab)) {
-							throw new CompileException("Unknown label '"+lab+"'.");
-						}
-						int address = event.labels.get(lab);
-						address = address - (origin+event.codeLength+2);
-						if(address<0) address = address + 65536;
-						addWord(line.data,address);event.codeLength+=2;
+				found = false;
+				for(ZoeCommand c : PARAMCOMMANDS) {
+					if(c.assemble(firstPass,origin, commandNospace, params, event, line)) {
+						found = true;
+						break;
 					}
-					continue;
 				}
-				
-				if(command.startsWith("GOSUB(")) {
-					line.data.add(7);event.codeLength+=1;
-					if(firstPass) {
-						line.data.add(0);event.codeLength+=1;
-						line.data.add(0);event.codeLength+=1;
-					} else {
-						String lab = params.get(0)[1];
-						ZoeEvent ze = null;
-						for(ZoeEvent z : events) {
-							if(z.name.equals(lab)) {
-								ze = z;
-								break;
-							}
-						}
-						if(ze==null) {
-							throw new CompileException("Unknown function '"+lab+"'.");
-						}						
-						int address = ze.origin;
-						address = address - (origin+event.codeLength+2);
-						if(address<0) address = address + 65536;
-						addWord(line.data,address);event.codeLength+=2;
-					}
-					continue;
-				}
-				
-				throw new CompileException("Unknown command '"+command+"'.");
+				if(found) continue;
+												
+				throw new CompileException("Unknown command '"+commandNospace+"'.");
 			
 			} catch (CompileException e) {
 				e.problemLine = line;

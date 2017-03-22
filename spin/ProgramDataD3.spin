@@ -38,7 +38,7 @@ zoeProgram
 'INIT_handler
   '	configure (out=D3, length=8, hasWhite=false)
   'HERE:
-  byte $01,$03,$E8 ' 		pause(time=1000)
-  byte $03,$FF,$FA ' 		goto(here) 
+  byte $01,$03,$E8 ' 	pause(time=1000)
+  byte $03,$FF,$FA ' 	goto(here) 
   byte $08 ' }
 
