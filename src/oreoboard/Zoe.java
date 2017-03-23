@@ -348,10 +348,20 @@ public class Zoe {
 					String b = getParam(params,"B",true);
 					line.data.add(0x09);event.codeLength+=1;					
 					addParam(line.data,col);event.codeLength+=2;
-					addParam(line.data,w);event.codeLength+=2;
-					addParam(line.data,g);event.codeLength+=2;
-					addParam(line.data,r);event.codeLength+=2;
-					addParam(line.data,b);event.codeLength+=2;					
+					
+					if(hasWhite) {
+						addParam(line.data,g);event.codeLength+=2;
+						addParam(line.data,r);event.codeLength+=2;
+						addParam(line.data,b);event.codeLength+=2;
+						addParam(line.data,w);event.codeLength+=2;
+					} else {
+						addParam(line.data,w);event.codeLength+=2;
+						addParam(line.data,g);event.codeLength+=2;
+						addParam(line.data,r);event.codeLength+=2;
+						addParam(line.data,b);event.codeLength+=2;
+					}
+					
+										
 					continue;
 				}
 				

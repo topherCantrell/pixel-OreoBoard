@@ -1,5 +1,6 @@
 package oreoboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ZoeCommandSET extends ZoeCommand {	
@@ -13,6 +14,7 @@ public class ZoeCommandSET extends ZoeCommand {
 		if(command.startsWith("SET(")) {
 			String pixel = getParam(params,"PIXEL",true);
 			String col = getParam(params,"COLOR",true);
+			line.data = new ArrayList<Integer>();
 			line.data.add(2);event.codeLength+=1;
 			addParam(line.data,pixel);event.codeLength+=2;
 			addParam(line.data,col);event.codeLength+=2;

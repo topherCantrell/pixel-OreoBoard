@@ -6,7 +6,7 @@ zoeProgram
 
 'config
   byte 12
-  byte 8
+  byte 84
   byte 24
   byte 0
 
@@ -29,14 +29,21 @@ zoeProgram
 'variables ' Variable storage (2 bytes each)
 
 'pixbuffer ' 1 byte per pixel
-  byte 0,0,0,0,0,0,0,0
+  byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 'events
   byte "INIT",0, $00,$08
   byte $FF
 
 'INIT_handler
-  '	configure (out=D4, length=8, hasWhite=false)
+  '	configure (out=D4, length=84, hasWhite=false)
+  byte $09,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00 ' 	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
+  byte $09,$00,$01,$00,$00,$00,$00,$00,$64,$00,$00 '     defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
+  byte $09,$00,$02,$00,$00,$00,$64,$00,$00,$00,$00 '     defineColor(color=2,   W=0, R=0, G=100,   B=0)    // Color 2  : Green
+  byte $09,$00,$03,$00,$00,$00,$00,$00,$00,$00,$64 '     defineColor(color=3,   W=0, R=0, G=0,   B=100)    // Color 1  : Blue
+  byte $0A,$00,$03 '     solid(color=3)
   'HERE:
   byte $01,$03,$E8 ' 	pause(time=1000)
   byte $03,$FF,$FA ' 	goto(here) 

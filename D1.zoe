@@ -7,15 +7,25 @@
 // [StopClimb]           Climber stop
 // [ClimbUp]             Climb up
 // [ClimbDown]           Climb down
+
+//                                PROP/NEO
+// Cable to D1 (plate)         is male/female
+// Cable to D2 (bottom two)    is male/male
+// Cable to D3 (bottom center) is male/female
+// Cable to D4 (basket doors)  is male/male (and changer if needed)
 	
 function init() {
+	
+  var teamColor
+  
+  [teamColor] = 2 // Neutral
   
   // The D1 area is the pixel grid
   configure (out=D1, length=192, hasWhite=false)
 	  	
   defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
   defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
-  defineColor(color=2,   W=0, R=150, G=100, B=10)   // Color 2  : Yellow(ish)
+  defineColor(color=2,   W=0, R=150, G=100, B=10)   // Color 2  : Yellow(ish)      
   //
   defineColor(color=8,   W=0, R=0,   G=0,   B=100)  // Color 8  : Blue   
   defineColor(color=9,   W=0, R=50,  G=50,  B=50)   // Color 9  : White
@@ -24,6 +34,11 @@ function init() {
   defineColor(color=11,  W=0, R=100, G=0,   B=0)    // Color 16 : Red   
   defineColor(color=12,  W=0, R=50,  G=50,  B=50)   // Color 17 : White
   defineColor(color=13,  W=0, R=50,  G=50,  B=50)   // Color 18 : White
+  
+  //
+  defineColor(color=20,  W=0, R=100, G=0, B=0) // Color 20 : Team Red
+  defineColor(color=21,  W=0, R=0, G=0, B=100) // Color 21 : Team Blue
+  defineColor(color=22,  W=0, R=5, G=5, B=5)   // Color 22 : Team Neutral
   
   // Large 5
   pattern(number=0) {
@@ -46,16 +61,19 @@ function init() {
       2...2
       22222
   }  
+  
+  // Blank the display
+  solid(color=0)
     
   // Draw the large 5858  
   drawPattern(number=0,  x=0,  y=0)
   drawPattern(number=1,  x=6,  y=0)
   drawPattern(number=0,  x=12, y=0)
   drawPattern(number=1,  x=18, y=0)
-  pause(time=5000)
-    
+      
   // Endless loop
   here:
+	  pause(time=5000)
   goto(here)
   
 }
@@ -69,7 +87,95 @@ function jiggle() {
 function shrinkGrow() {
 }
 
+function [ModeAutonomousRed]() { //   Entering autonomous mode on RED team
+	[teamColor] = 20
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=22)
+	set(pixel=59,color=22)
+	// Endless loop
+	here:
+	pause(time=5000)
+	goto(here)
+}
 
+function [ModeAutonomousBlue]() { //  Entering autonomous mode on BLUE team
+	[teamColor] = 21
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=22)
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ModeTeleop]() { //          Entering teleop mode
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=22)
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [GearBasketOpen]() { //      Open the gear basket
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [GearBasketClose]() { //     Close the gear basket
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=22)
+	set(pixel=59,color=22)
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [StopClimb]() { //           Climber stop
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=22)
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ClimbUp]() { //             Climb up
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=22)
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ClimbDown]() { //           Climb down
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
 
 
 
