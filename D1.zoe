@@ -1,3 +1,4 @@
+
 // The robot sends these commands:
 // [ModeAutonomousRed]   Entering autonomous mode on RED team
 // [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
@@ -10,7 +11,7 @@
 
 //                                PROP/NEO
 // Cable to D1 (plate)         is male/female
-// Cable to D2 (bottom two)    is male/male
+// Cable to D2       (NOT USED)
 // Cable to D3 (bottom center) is male/female
 // Cable to D4 (basket doors)  is male/male (and changer if needed)
 	
@@ -25,7 +26,7 @@ function init() {
 	  	
   defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
   defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
-  defineColor(color=2,   W=0, R=150, G=100, B=10)   // Color 2  : Yellow(ish)      
+  defineColor(color=2,   W=0, R=120, G=80,  B=4)   // Color 2  : Yellow(ish)      
   //
   defineColor(color=8,   W=0, R=0,   G=0,   B=100)  // Color 8  : Blue   
   defineColor(color=9,   W=0, R=50,  G=50,  B=50)   // Color 9  : White
@@ -52,7 +53,7 @@ function init() {
   }
    
   // Large 8
-  pattern(number=1){
+  pattern(number=1) {
       22222
       2...2
       2...2
@@ -60,6 +61,40 @@ function init() {
       2...2
       2...2
       22222
+  }  
+  
+  pattern(number=2) {
+      1111
+	  1...
+	  111.
+	  ...1
+	  ...1
+	  1111
+  }
+  
+  pattern(number=3) {
+      2222
+      2..2
+      .22.
+      2..2
+      2..2
+      2222
+  }  
+  
+  pattern(number=4) {
+      111
+	  1..
+	  111
+	  ..1
+	  111
+  }
+  
+  pattern(number=5) {
+      222
+      2.2
+      222
+      2.2
+      222
   }  
   
   // Blank the display
@@ -100,7 +135,7 @@ function [ModeAutonomousRed]() { //   Entering autonomous mode on RED team
 }
 
 function [ModeAutonomousBlue]() { //  Entering autonomous mode on BLUE team
-	[teamColor] = 21
+	[teamColor] = 20
 	// Endless loop
 	set(pixel=56,color=[teamColor])
 	set(pixel=57,color=22)
@@ -177,6 +212,3 @@ function [ClimbDown]() { //           Climb down
 	goto(here)
 }
 
-
-
-  

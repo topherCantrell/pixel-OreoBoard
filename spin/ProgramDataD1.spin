@@ -39,17 +39,17 @@ zoeProgram
 
 'events
   byte "INIT",0, $00,$B5
-  byte "ALTERNATE",0, $01,$B9
-  byte "JIGGLE",0, $01,$BA
-  byte "SHRINKGROW",0, $01,$BB
-  byte "[MODEAUTONOMOUSRED]",0, $01,$BC
-  byte "[MODEAUTONOMOUSBLUE]",0, $01,$DB
-  byte "[MODETELEOP]",0, $01,$FA
-  byte "[GEARBASKETOPEN]",0, $02,$15
-  byte "[GEARBASKETCLOSE]",0, $02,$30
-  byte "[STOPCLIMB]",0, $02,$4B
-  byte "[CLIMBUP]",0, $02,$66
-  byte "[CLIMBDOWN]",0, $02,$81
+  byte "ALTERNATE",0, $02,$17
+  byte "JIGGLE",0, $02,$18
+  byte "SHRINKGROW",0, $02,$19
+  byte "[MODEAUTONOMOUSRED]",0, $02,$1A
+  byte "[MODEAUTONOMOUSBLUE]",0, $02,$39
+  byte "[MODETELEOP]",0, $02,$58
+  byte "[GEARBASKETOPEN]",0, $02,$73
+  byte "[GEARBASKETCLOSE]",0, $02,$8E
+  byte "[STOPCLIMB]",0, $02,$A9
+  byte "[CLIMBUP]",0, $02,$C4
+  byte "[CLIMBDOWN]",0, $02,$DF
   byte $FF
 
 'INIT_handler
@@ -58,7 +58,7 @@ zoeProgram
   '  configure (out=D1, length=192, hasWhite=false)
   byte $09,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00 '   defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
   byte $09,$00,$01,$00,$00,$00,$00,$00,$64,$00,$00 '   defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
-  byte $09,$00,$02,$00,$00,$00,$64,$00,$96,$00,$0A '   defineColor(color=2,   W=0, R=150, G=100, B=10)   // Color 2  : Yellow(ish)      
+  byte $09,$00,$02,$00,$00,$00,$50,$00,$78,$00,$04 '   defineColor(color=2,   W=0, R=120, G=80,  B=4)   // Color 2  : Yellow(ish)      
   byte $09,$00,$08,$00,$00,$00,$00,$00,$00,$00,$64 '   defineColor(color=8,   W=0, R=0,   G=0,   B=100)  // Color 8  : Blue   
   byte $09,$00,$09,$00,$00,$00,$32,$00,$32,$00,$32 '   defineColor(color=9,   W=0, R=50,  G=50,  B=50)   // Color 9  : White
   byte $09,$00,$0A,$00,$00,$00,$32,$00,$32,$00,$32 '   defineColor(color=10,  W=0, R=50,  G=50,  B=50)   // Color 10 : White
@@ -77,7 +77,7 @@ zoeProgram
   '	  ....1
   '	  11111
   '  }
-  byte $0B,$01,$05,$07,$02,$02,$02,$02,$02,$02,$00,$00,$00,$02,$02,$00,$00,$00,$02,$00,$02,$02,$02,$00,$02,$00,$00,$00,$02,$02,$00,$00,$00,$02,$02,$02,$02,$02,$02 '   pattern(number=1){
+  byte $0B,$01,$05,$07,$02,$02,$02,$02,$02,$02,$00,$00,$00,$02,$02,$00,$00,$00,$02,$00,$02,$02,$02,$00,$02,$00,$00,$00,$02,$02,$00,$00,$00,$02,$02,$02,$02,$02,$02 '   pattern(number=1) {
   '      22222
   '      2...2
   '      2...2
@@ -85,6 +85,36 @@ zoeProgram
   '      2...2
   '      2...2
   '      22222
+  '  }  
+  byte $0B,$02,$04,$06,$01,$01,$01,$01,$01,$00,$00,$00,$01,$01,$01,$00,$00,$00,$00,$01,$00,$00,$00,$01,$01,$01,$01,$01 '   pattern(number=2) {
+  '      1111
+  '	  1...
+  '	  111.
+  '	  ...1
+  '	  ...1
+  '	  1111
+  '  }
+  byte $0B,$03,$04,$06,$02,$02,$02,$02,$02,$00,$00,$02,$00,$02,$02,$00,$02,$00,$00,$02,$02,$00,$00,$02,$02,$02,$02,$02 '   pattern(number=3) {
+  '      2222
+  '      2..2
+  '      .22.
+  '      2..2
+  '      2..2
+  '      2222
+  '  }  
+  byte $0B,$04,$03,$05,$01,$01,$01,$01,$00,$00,$01,$01,$01,$00,$00,$01,$01,$01,$01 '   pattern(number=4) {
+  '      111
+  '	  1..
+  '	  111
+  '	  ..1
+  '	  111
+  '  }
+  byte $0B,$05,$03,$05,$02,$02,$02,$02,$00,$02,$02,$02,$02,$02,$00,$02,$02,$02,$02 '   pattern(number=5) {
+  '      222
+  '      2.2
+  '      222
+  '      2.2
+  '      222
   '  }  
   byte $0A,$00,$00 '   solid(color=0)
   byte $0C,$00,$00,$00,$00,$00,$00,$00,$00 '   drawPattern(number=0,  x=0,  y=0)
@@ -117,7 +147,7 @@ zoeProgram
   byte $08 ' }
 
 '[MODEAUTONOMOUSBLUE]_handler
-  byte $04,$00,$00,$15 ' 	[teamColor] = 21
+  byte $04,$00,$00,$14 ' 	[teamColor] = 20
   byte $02,$00,$38,$80,$00 ' 	set(pixel=56,color=[teamColor])
   byte $02,$00,$39,$00,$16 ' 	set(pixel=57,color=22)
   byte $02,$00,$3A,$00,$16 ' 	set(pixel=58,color=22)

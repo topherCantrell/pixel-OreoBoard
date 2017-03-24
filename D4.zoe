@@ -15,20 +15,67 @@
 // Cable to D4 (basket doors)  is male/male (and changer if needed)
 
 function init() {
+
+    var teamColor
+    var x
+    var y
 	
 	// D4 is the gear basket doors
-	// 42 pixels each door
-	configure (out=D4, length=84, hasWhite=false)
+	// 46 pixels each door
+	configure (out=D4, length=92, hasWhite=false)
 	
-	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
-    defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
-    defineColor(color=2,   W=0, R=0, G=100,   B=0)    // Color 2  : Green
-    defineColor(color=3,   W=0, R=0, G=0,   B=100)    // Color 1  : Blue
+	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black    
+    defineColor(color=1,   W=0, R=0, G=0,   B=100)    // Color 1  : Blue
     
-    solid(color=3)
+    solid(color=1)
     	
-	here:
+here:
 	pause(time=1000)
 	goto(here) 
   
+}
+
+function [ModeTeleop]() { //          Entering teleop mode
+	solid(color=0)
+	
+here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [GearBasketOpen]() {
+
+  [x] = 0
+  [y] = 46
+  
+here:
+  set(pixel=[x],color=1)
+  set(pixel=[y],color=1)
+  pause(time=100)
+  [x] = [x] + 1
+  [y] = [y] + 1
+  if([x]<46)
+    goto(here)
+
+here2:
+	pause(time=1000)
+	goto(here2) 
+	
+function [GearBasketClose]() {
+
+  [x] = 45
+  [y] = 91
+
+here:
+  set(pixel=[x],color=1)
+  set(pixel=[y],color=1)
+  pause(time=100)
+  [x] = [x] - 1
+  [y] = [y] - 1
+  if([y]>45)
+    goto(here)
+
+here2:
+	pause(time=1000)
+	goto(here2) 	
 }

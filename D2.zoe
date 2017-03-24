@@ -1,3 +1,4 @@
+
 // The robot sends these commands:
 // [ModeAutonomousRed]   Entering autonomous mode on RED team
 // [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
@@ -10,21 +11,18 @@
 
 //                                PROP/NEO
 // Cable to D1 (plate)         is male/female
-// Cable to D2 (bottom two)    is male/male
+// Cable to D2       (NOT USED)
 // Cable to D3 (bottom center) is male/female
 // Cable to D4 (basket doors)  is male/male (and changer if needed)
 
 function init() {
 
-    // D2 is the bottom of the robot
+    // D2 is the bottom of the robot (Not used)
 	configure (out=D2, length=66, hasWhite=false)
 	
 	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
-    defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
-    defineColor(color=2,   W=0, R=0, G=100,   B=0)    // Color 2  : Green
-    defineColor(color=3,   W=0, R=0, G=0,   B=100)    // Color 1  : Blue
-    
-    solid(color=1)
+        
+    solid(color=0)
     	
 	here:
 	pause(time=1000)
