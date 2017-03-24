@@ -43,8 +43,8 @@ var NEO = (function() {
 
 }());
 
-function makeSquare(x,y,snum) {
-	NEO.setCursor(x,y, 1,4,15,snum);
+function makeSquare(strip,x,y,snum) {
+	NEO.setCursor(x,y, strip,4,15,snum);
 	NEO.makeStrip(1,22);
 	NEO.setCursor(NEO.cursor.x-5,NEO.cursor.y+10);
 	NEO.makeStrip(2,16);
@@ -54,21 +54,21 @@ function makeSquare(x,y,snum) {
 	NEO.makeStrip(0,16);
 }
 
-NEO.setCursor(320,13,1,4,24,0);
+//Bottom
+NEO.setCursor(320,13,3,4,24,0);
 NEO.makeStrip(3,11);
 NEO.makeStrip(2,11);
 NEO.setCursor(NEO.cursor.x+24,NEO.cursor.y-24);
 NEO.makeStrip(1,11);
-
 NEO.setCursor(730,13);
 NEO.makeStrip(1,11);
 NEO.makeStrip(2,11);
 NEO.setCursor(NEO.cursor.x-24,NEO.cursor.y-24);
 NEO.makeStrip(3,11);
+makeSquare(3,370,10,  66);
 
-makeSquare(370,10,  66);
-
-NEO.setCursor(10,10, 2,4,15,0);
+// Grid
+NEO.setCursor(10,10, 1,4,15,0);
 for(var z=0;z<3;++z) {
 	for(var y=0;y<8;++y) {
 		NEO.setCursor(10+120*z,10+y*15);
@@ -76,7 +76,8 @@ for(var z=0;z<3;++z) {
 	}
 }
 
-NEO.setCursor(10,10, 3,4,10,0);
+// Doors
+NEO.setCursor(10,10, 4,4,10,0);
 NEO.makeStrip(1,20);
 NEO.setCursor(NEO.cursor.x-10,NEO.cursor.y+10);
 NEO.makeStrip(2,3);
@@ -91,18 +92,18 @@ NEO.setCursor(NEO.cursor.x,NEO.cursor.y);
 NEO.makeStrip(1,20);
 
 var proc1 = initZoeProcessor($("#oreoZoe_D1"),$("#code_D1").val());   
-var proc2 = initZoeProcessor($("#oreoZoe_D2"),$("#code_D2").val());
 var proc3 = initZoeProcessor($("#oreoZoe_D3"),$("#code_D3").val()); 
+var proc4 = initZoeProcessor($("#oreoZoe_D4"),$("#code_D4").val());
 
 $("#stop_D1").bind("click",function() { 
     proc1.stop();   
 });
-$("#stop_D2").bind("click",function() { 
-    proc2.stop();
-});
 $("#stop_D3").bind("click",function() { 
     proc3.stop();    
  });
+$("#stop_D4").bind("click",function() { 
+    proc4.stop();
+});
 
 
 $(".zoeEvent").bind("click",function() {
@@ -113,11 +114,11 @@ $(".zoeEvent").bind("click",function() {
         }
         proc1.event(t.text());
     }  
-    if(t.hasClass("D2")) {
+    if(t.hasClass("D4")) {
         if(t.text().toUpperCase()==="INIT") {
-            proc2.reset($("#code_D2").val()); 
+            proc4.reset($("#code_D4").val()); 
         }
-        proc2.event(t.text());
+        proc4.event(t.text());
     } 
     if(t.hasClass("D3")) {
         if(t.text().toUpperCase()==="INIT") {

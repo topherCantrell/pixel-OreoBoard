@@ -349,24 +349,24 @@ function initZoeProcessor(stripElement,script) {
 			    cb();
 			}
 			
-			else if(parts[0]==='STRIP.SET') {
+			else if(parts[0]==='SET') {
 			    var c = getParameter('COLOR',parts[1],"colorNumber");
 			    if(colors[c]===undefined) throw "Undefined color "+c;
-                var rc = "#"+twoDigitHex(Math.floor((colors[c].red/100)*255))+
-                          twoDigitHex(Math.floor((colors[c].green/100)*255))+
-                          twoDigitHex(Math.floor((colors[c].blue/100)*255));
+                var rc = "#"+twoDigitHex(Math.floor((colors[c].red/150)*255))+
+                          twoDigitHex(Math.floor((colors[c].green/150)*255))+
+                          twoDigitHex(Math.floor((colors[c].blue/150)*255));
 			    var pix = getParameter('PIXEL',parts[1],"number");
 			    // TODO range check
 			    stripElement.find("#"+stripConfig.out+"_"+pix).attr("fill",rc);		
 			    cb();
 			}
 			
-			else if(parts[0]==='STRIP.PATTERN') {
+			else if(parts[0]==='DRAWPATTERN') {
 			    var x = parseInt(getParameter('X',parts[1],"number"));
 			    var y = parseInt(getParameter('Y',parts[1],"number"));
-			    var pat = parseInt(getParameter('PATTERN',parts[1],"number"));
+			    var pat = parseInt(getParameter('NUMBER',parts[1],"number"));
 			    var off = getParameter('COLOROFFSET',parts[1],"colorNumber",false);			    
-			    if(off===undefined) off=0;
+			    if(off===undefined || off===null) off=0;
 			    else off = parseInt(off);
 			    for(var yy=0;yy<patterns[pat].length;++yy) {
 			        for(var xx=0;xx<patterns[pat][yy].length;++xx) {
@@ -374,21 +374,21 @@ function initZoeProcessor(stripElement,script) {
 			            var c = patterns[pat][yy][xx];
 			            if(c==".") c="0";
 			            c = parseInt(c)+off;
-			            var rc = "#"+twoDigitHex(Math.floor((colors[c].red/100)*255))+
-                            twoDigitHex(Math.floor((colors[c].green/100)*255))+
-                            twoDigitHex(Math.floor((colors[c].blue/100)*255));
+			            var rc = "#"+twoDigitHex(Math.floor((colors[c].red/150)*255))+
+                            twoDigitHex(Math.floor((colors[c].green/150)*255))+
+                            twoDigitHex(Math.floor((colors[c].blue/150)*255));
 			            stripElement.find("#"+stripConfig.out+"_"+pix).attr("fill",rc);  
 			        }
 			    }			    
 			    cb();			    
 			}
 			
-			else if(parts[0]==='STRIP.SOLID') {
+			else if(parts[0]==='SOLID') {
 				var c = getParameter('COLOR',parts[1],"colorNumber");
 				if(colors[c]===undefined) throw "Undefined color "+c;
-				var rc = "#"+twoDigitHex(Math.floor((colors[c].red/100)*255))+
-				          twoDigitHex(Math.floor((colors[c].green/100)*255))+
-				          twoDigitHex(Math.floor((colors[c].blue/100)*255));
+				var rc = "#"+twoDigitHex(Math.floor((colors[c].red/150)*255))+
+				          twoDigitHex(Math.floor((colors[c].green/150)*255))+
+				          twoDigitHex(Math.floor((colors[c].blue/150)*255));
 				stripElement.find("circle").attr("fill",rc);
 				cb();
 			}
