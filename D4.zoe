@@ -21,8 +21,8 @@ function init() {
     var y
 	
 	// D4 is the gear basket doors
-	// 46 pixels each door
-	configure (out=D4, length=92, hasWhite=false)
+	// 47 pixels each door
+	configure (out=D4, length=94, hasWhite=false)
 	
 	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black    
     defineColor(color=1,   W=0, R=0, G=0,   B=100)    // Color 1  : Blue
@@ -46,15 +46,15 @@ here:
 function [GearBasketOpen]() {
 
   [x] = 0
-  [y] = 46
+  [y] = 47
   
 here:
-  set(pixel=[x],color=1)
-  set(pixel=[y],color=1)
+  set(pixel=[x],color=0)
+  set(pixel=[y],color=0)
   pause(time=100)
   [x] = [x] + 1
   [y] = [y] + 1
-  if([x]<46)
+  if([x]<47)
     goto(here)
 
 here2:
@@ -63,8 +63,8 @@ here2:
 	
 function [GearBasketClose]() {
 
-  [x] = 45
-  [y] = 91
+  [x] = 46
+  [y] = 93
 
 here:
   set(pixel=[x],color=1)
@@ -72,7 +72,7 @@ here:
   pause(time=100)
   [x] = [x] - 1
   [y] = [y] - 1
-  if([y]>45)
+  if([y]>46)
     goto(here)
 
 here2:

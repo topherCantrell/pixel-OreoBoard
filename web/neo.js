@@ -80,14 +80,14 @@ for(var z=0;z<3;++z) {
 NEO.setCursor(10,10, 4,4,10,0);
 NEO.makeStrip(1,20);
 NEO.setCursor(NEO.cursor.x-10,NEO.cursor.y+10);
-NEO.makeStrip(2,3);
+NEO.makeStrip(2,7);
 NEO.setCursor(NEO.cursor.x,NEO.cursor.y);
 NEO.makeStrip(3,20);
 
 NEO.setCursor(450,10);
 NEO.makeStrip(3,20);
 NEO.setCursor(NEO.cursor.x+10,NEO.cursor.y+10);
-NEO.makeStrip(2,3); 
+NEO.makeStrip(2,7); 
 NEO.setCursor(NEO.cursor.x,NEO.cursor.y);
 NEO.makeStrip(1,20);
 
