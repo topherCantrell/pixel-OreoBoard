@@ -36,7 +36,7 @@ here:
 }
 
 function [ModeTeleop]() { //          Entering teleop mode
-	solid(color=0)
+	solid(color=1)
 	
 here:
 	pause(time=5000)
@@ -79,3 +79,4 @@ here2:
 	pause(time=1000)
 	goto(here2) 	
 }
+  

@@ -1,3 +1,4 @@
+  
 
 // The robot sends these commands:
 // [ModeAutonomousRed]   Entering autonomous mode on RED team
@@ -103,15 +104,15 @@ function [ModeTeleop]() { //          Entering teleop mode
     
   loop1:
     solid(color=[y])
-    pause(time=250)
+    pause(time=50)
     [y] = [y] + 1    
     [x] = [x] + 1
-    if([x]<16)
+    if([x]<15)
       goto(loop1)
       
   loop2:
     solid(color=[y])
-    pause(time=250)
+    pause(time=50)
     [y] = [y] - 1
     [x] = [x] - 1
     if([x]>0) 
@@ -120,3 +121,5 @@ function [ModeTeleop]() { //          Entering teleop mode
     goto(top)
     
 }
+  
+  
