@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Demo Board</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>    
+  </head>
+  
+  <body>
+  
+  <h1>Border D1</h1>
+  <svg id="oreoZoe_D1" width="1100" height="280"></svg>
+  <br>
+  <textarea id="code_D1" style="width:100ch;height:60ch">
+  
+  function init() {
+  
+      configure (out=D1, length=76, hasWhite=true)
+	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+	  
+	  set(pixel=2,color=1)
+	  here:
+	  pause(time=1000)
+	  goto(here)
+	  
+  }
+  
+  </textarea>   
+  <br>
+  <button id="stop_D1">Stop</button>   
+  <button class="zoeEvent D1">INIT</button>
+  <hr>
+  
+  <h1>Ring D2</h1>
+  <svg id="oreoZoe_D2" width="1100" height="50"></svg>
+  <br>
+  <textarea id="code_D2" style="width:100ch;height:60ch">
+  
+  function init() {
+  
+      configure (out=D2, length=24, hasWhite=true)	 
+	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+	  
+	  set(pixel=2,color=1)
+	  here:
+	  pause(time=1000)
+	  goto(here)
+  }
+  
+  </textarea>   
+  <br>
+  <button id="stop_D2">Stop</button>   
+  <button class="zoeEvent D2">INIT</button>
+  <hr>
+  
+  <h1>Strip D3</h1>
+  <svg id="oreoZoe_D3" width="1100" height="50"></svg>
+  <br>
+  <textarea id="code_D3" style="width:100ch;height:60ch">
+  
+  function init() {
+  
+      configure (out=D3, length=22, hasWhite=false)
+	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+	  
+	  set(pixel=2,color=1)
+	  here:
+	  pause(time=1000)
+	  goto(here)
+	  
+  }
+  
+  </textarea>   
+  <br>
+  <button id="stop_D3">Stop</button>   
+  <button class="zoeEvent D3">INIT</button>
+  <hr>  
+  
+  <h1>Grid D4</h1>
+  <svg id="oreoZoe_D4" width="350" height="130"></svg>
+  <br>
+  <textarea id="code_D4" style="width:100ch;height:60ch">
+  
+  function init() {
+  
+      configure (out=D4, length=192, hasWhite=false)
+	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+	  
+	  set(pixel=2,color=1)
+	  here:
+	  pause(time=1000)
+	  goto(here)
+  }
+ 
+  </textarea>
+  <br>
+  <button id="stop_D4">Stop</button>
+  <button class="zoeEvent D4">INIT</button>  
+  <script src="ZoeProcessor.js"></script>
+  <script src="neo.js"></script>
+  
+  </body>
+  
+</html>

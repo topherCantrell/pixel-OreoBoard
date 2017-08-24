@@ -6,8 +6,8 @@ zoeProgram
 
 'config
   byte 14
-  byte 66
   byte 24
+  byte 32
   byte 0
 
 'eventInput
@@ -29,20 +29,20 @@ zoeProgram
 'variables ' Variable storage (2 bytes each)
 
 'pixbuffer ' 1 byte per pixel
-  byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-  byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-  byte 0,0
+  byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 'events
   byte "INIT",0, $00,$08
   byte $FF
 
 'INIT_handler
-  '	configure (out=D2, length=66, hasWhite=false)
-  byte $09,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00 ' 	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
-  byte $0A,$00,$00 '     solid(color=0)
+  '      configure (out=D2, length=24, hasWhite=true)	 
+  byte $09,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00 ' 	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+  byte $09,$00,$01,$00,$00,$00,$00,$00,$0A,$00,$00 ' 	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+  byte $0A,$00,$00 ' 	  solid(color=0)
+  byte $02,$00,$02,$00,$01 ' 	  set(pixel=2,color=1)
   'HERE:
-  byte $01,$03,$E8 ' 	pause(time=1000)
-  byte $03,$FF,$FA ' 	goto(here) 
-  byte $08 ' }
+  byte $01,$03,$E8 ' 	  pause(time=1000)
+  byte $03,$FF,$FA ' 	  goto(here)
+  byte $08 '   }
 

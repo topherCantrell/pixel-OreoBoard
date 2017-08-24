@@ -1,125 +1,14 @@
   
-
-// The robot sends these commands:
-// [ModeAutonomousRed]   Entering autonomous mode on RED team
-// [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
-// [ModeTeleop]          Entering teleop mode
-// [GearBasketOpen]      Open the gear basket
-// [GearBasketClose]     Close the gear basket		
-// [StopClimb]           Climber stop
-// [ClimbUp]             Climb up
-// [ClimbDown]           Climb down
-
-//                                PROP/NEO
-// Cable to D1 (plate)         is male/female
-// Cable to D2       (NOT USED)
-// Cable to D3 (bottom center) is male/female
-// Cable to D4 (basket doors)  is male/male (and changer if needed)
-
-function init() {
-
-    var teamColor
-    var x
-    var y
-
-	// D3 is the bottom of the robot (center square)
-	configure (out=D3, length=76, hasWhite=true)
-	
-	// Team Red
-	defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
-	defineColor(color=1,   W=0, R=10,  G=0,   B=0)
-	defineColor(color=2,   W=0, R=20,  G=0,   B=0)
-	defineColor(color=3,   W=0, R=30,  G=0,   B=0)
-	defineColor(color=4,   W=0, R=40,  G=0,   B=0)
-	defineColor(color=5,   W=0, R=50,  G=0,   B=0)
-	defineColor(color=6,   W=0, R=60,  G=0,   B=0)
-	defineColor(color=7,   W=0, R=70,  G=0,   B=0)
-	defineColor(color=8,   W=0, R=80,  G=0,   B=0)
-	defineColor(color=9,   W=0, R=90,  G=0,   B=0)
-	defineColor(color=10,   W=0, R=100,  G=0,   B=0)
-	defineColor(color=11,   W=0, R=110,  G=0,   B=0)
-	defineColor(color=12,   W=0, R=120,  G=0,   B=0)
-	defineColor(color=13,   W=0, R=130,  G=0,   B=0)
-	defineColor(color=14,   W=0, R=140,  G=0,   B=0)
-	defineColor(color=15,   W=0, R=150,  G=0,   B=0)
-	
-	// Team Blue
-	defineColor(color=32,   W=0, B=0,   G=0,   R=0)    
-	defineColor(color=33,   W=0, B=10,  G=0,   R=0)
-	defineColor(color=34,   W=0, B=20,  G=0,   R=0)
-	defineColor(color=35,   W=0, B=30,  G=0,   R=0)
-	defineColor(color=36,   W=0, B=40,  G=0,   R=0)
-	defineColor(color=37,   W=0, B=50,  G=0,   R=0)
-	defineColor(color=38,   W=0, B=60,  G=0,   R=0)
-	defineColor(color=39,   W=0, B=70,  G=0,   R=0)
-	defineColor(color=40,   W=0, B=80,  G=0,   R=0)
-	defineColor(color=41,   W=0, B=90,  G=0,   R=0)
-	defineColor(color=42,   W=0, B=100,  G=0,   R=0)
-	defineColor(color=43,   W=0, B=110,  G=0,   R=0)
-	defineColor(color=44,   W=0, B=120,  G=0,   R=0)
-	defineColor(color=45,   W=0, B=130,  G=0,   R=0)
-	defineColor(color=46,   W=0, B=140,  G=0,   R=0)
-	defineColor(color=47,   W=0, B=150,  G=0,   R=0)
-	
-	defineColor(color=20,   W=0, R=50, B=50, G=50)
-		
-	[teamColor] = 0
-    solid(color=47)
-    	
-	here:
-	pause(time=1000)
-	goto(here) 
+  function init() {
   
-}
-
-function [ModeAutonomousRed]() { //   Entering autonomous mode on RED team
-	[teamColor] = 0
-	[x] = [teamColor] + 15
-	
-	solid(color=[x])
-	
-	// Endless loop
-	here:
-	pause(time=5000)
-	goto(here)
-}
-
-function [ModeAutonomousBlue]() { //  Entering autonomous mode on BLUE team
-	[teamColor] = 0
-	[x] = [teamColor] + 15
-	
-	solid(color=[x])
-	
-	// Endless loop
-	here:
-	pause(time=5000)
-	goto(here)	
-}
-
-function [ModeTeleop]() { //          Entering teleop mode
-
-  top:
-    [x] = 0    
-    [y] = [teamColor]
-    
-  loop1:
-    solid(color=[y])
-    pause(time=50)
-    [y] = [y] + 1    
-    [x] = [x] + 1
-    if([x]<15)
-      goto(loop1)
-      
-  loop2:
-    solid(color=[y])
-    pause(time=50)
-    [y] = [y] - 1
-    [x] = [x] - 1
-    if([x]>0) 
-      goto(loop2)
-    
-    goto(top)
-    
-}
-  
-  
+      configure (out=D3, length=22, hasWhite=false)
+	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+	  
+	  solid(color=0)
+	  set(pixel=2,color=1)
+	  here:
+	  pause(time=1000)
+	  goto(here)
+	  
+  }
