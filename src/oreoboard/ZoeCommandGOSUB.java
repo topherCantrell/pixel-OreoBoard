@@ -1,5 +1,6 @@
 package oreoboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ZoeCommandGOSUB extends ZoeCommand {
@@ -11,6 +12,7 @@ public class ZoeCommandGOSUB extends ZoeCommand {
 	@Override
 	public boolean assemble(boolean firstPass, int origin, String command, List<String[]> params, ZoeEvent event, ZoeLine line) {
 		if(command.startsWith("GOSUB(")) {
+			line.data = new ArrayList<Integer>();
 			line.data.add(7);event.codeLength+=1;
 			if(firstPass) {
 				line.data.add(0);event.codeLength+=1;
