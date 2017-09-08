@@ -2,6 +2,8 @@ var NEO = (function() {
 	
 	var OFFS = [[0,-1],[1,0],[0,1],[-1,0]];
 	
+	var procs = [null, null, null, null];
+	
 	var my = {};
 			
 	my.cursor = {}
@@ -39,89 +41,67 @@ var NEO = (function() {
 		$("#S"+stripNumber+"_"+number).attr("fill",color);
 	};
 	
+	my.makeSquare = function(strip,x,y,len,wid,snum) {
+		my.setCursor(x,y, strip,4,15,snum);
+		my.makeStrip(1,len);
+		my.setCursor(NEO.cursor.x-5,NEO.cursor.y+10);
+		my.makeStrip(2,wid);
+		my.setCursor(NEO.cursor.x-10,NEO.cursor.y-5);
+		my.makeStrip(3,len);
+		my.setCursor(NEO.cursor.x+5,NEO.cursor.y-10);
+		my.makeStrip(0,wid);
+	}
+	
+	my.initProcessors = function() {
+		//svg id "oreoZoe_D1" with text area id "code_D1"
+		//Buttons have classes:
+		//
+		//class="zoeEvent D1 stop"  - the STOP button
+		//class="zoeEvent D1 init"  - the INIT button (reset then INIT script)
+		//class="zoeEvent D1"       - whatever the text is becomes the event call
+
+		if($("#oreoZoe_D1").length) proc1 = initZoeProcessor($("#oreoZoe_D1"),$("#code_D1").val());
+		if($("#oreoZoe_D2").length) proc2 = initZoeProcessor($("#oreoZoe_D2"),$("#code_D2").val());
+		if($("#oreoZoe_D3").length) proc3 = initZoeProcessor($("#oreoZoe_D3"),$("#code_D3").val()); 
+		if($("#oreoZoe_D4").length) proc4 = initZoeProcessor($("#oreoZoe_D4"),$("#code_D4").val());
+
+		$(".zoeEvent").bind("click",function() {
+		 var t = $(this);
+		 
+		 var isStop = t.hasClass("stop");
+		 var isInit = t.hasClass("init");
+		 var strip;
+		 var proc;
+		 if(t.hasClass("D1")) {
+		 	strip="D1";
+		 	proc = proc1;
+		 }
+		 if(t.hasClass("D2")) {
+		 	strip="D2";
+		 	proc = proc2;
+		 }
+		 if(t.hasClass("D3")) {
+		 	strip="D3";
+		 	proc = proc3;
+		 }
+		 if(t.hasClass("D4")) {
+		 	strip="D4";
+		 	proc = proc4;
+		 }
+		 
+		 if(isStop) {
+		 	proc.stop();
+		 	return;
+		 }
+		 
+		 if(isInit) {
+		 	proc.reset($("#code_"+strip).val());
+		 }
+		 proc.event(t.text());
+		     
+		});
+	}
+	
 	return my;
 
 }());
-
-function makeSquare(strip,x,y,snum) {
-	NEO.setCursor(x,y, strip,4,15,snum);
-	NEO.makeStrip(1,22);
-	NEO.setCursor(NEO.cursor.x-5,NEO.cursor.y+10);
-	NEO.makeStrip(2,16);
-	NEO.setCursor(NEO.cursor.x-10,NEO.cursor.y-5);
-	NEO.makeStrip(3,22);
-	NEO.setCursor(NEO.cursor.x+5,NEO.cursor.y-10);
-	NEO.makeStrip(0,16);
-}
-
-// D1 Border
-makeSquare(1,50,10, 0);
-
-// D2 Circle
-NEO.setCursor(10,10, 2,4,20,0);
-NEO.makeStrip(1,24);
-
-// D3 Strip
-NEO.setCursor(10,10, 3,4,10,0);
-NEO.makeStrip(1,22);
-
-// D4 Grid
-NEO.setCursor(10,10, 4,4,15,0);
-for(var z=0;z<3;++z) {
-	for(var y=0;y<8;++y) {
-		NEO.setCursor(10+120*z,10+y*15);
-		NEO.makeStrip(1,8);
-	}
-}
-
-var proc1 = initZoeProcessor($("#oreoZoe_D1"),$("#code_D1").val());
-var proc2 = initZoeProcessor($("#oreoZoe_D2"),$("#code_D2").val());
-var proc3 = initZoeProcessor($("#oreoZoe_D3"),$("#code_D3").val()); 
-var proc4 = initZoeProcessor($("#oreoZoe_D4"),$("#code_D4").val());
-
-$("#stop_D1").bind("click",function() { 
-    proc1.stop();   
-});
-$("#stop_D2").bind("click",function() { 
-    proc2.stop();   
-});
-$("#stop_D3").bind("click",function() { 
-    proc3.stop();    
- });
-$("#stop_D4").bind("click",function() { 
-    proc4.stop();
-});
-
-
-$(".zoeEvent").bind("click",function() {
-    var t = $(this);    
-    if(t.hasClass("D1")) {
-        if(t.text().toUpperCase()==="INIT") {
-            proc1.reset($("#code_D1").val()); 
-        }
-        proc1.event(t.text());
-    }  
-    if(t.hasClass("D2")) {
-        if(t.text().toUpperCase()==="INIT") {
-            proc2.reset($("#code_D2").val()); 
-        }
-        proc2.event(t.text());
-    }     
-    if(t.hasClass("D3")) {
-        if(t.text().toUpperCase()==="INIT") {
-            proc3.reset($("#code_D3").val()); 
-        }
-        proc3.event(t.text());
-    } 
-    if(t.hasClass("D4")) {
-        if(t.text().toUpperCase()==="INIT") {
-            proc4.reset($("#code_D4").val()); 
-        }
-        proc4.event(t.text());
-    } 
-});
-
-
-
-
-

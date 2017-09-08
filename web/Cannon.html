@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>T-Shirt Cannon Robot</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>    
+  </head>
+  
+  <body>
+  
+    
+  <h1>Grid D1</h1>
+  <svg id="oreoZoe_D1" width="350" height="130"></svg>
+  <br>
+  <textarea id="code_D1" style="width:100ch;height:60ch">
+  
+  function init() {
+  
+      configure (out=D4, length=192, hasWhite=false)
+      defineColor(color=0,   W=0, R=0,   G=0,   B=0)    
+      defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+      
+      set(pixel=2,color=1)
+      here:
+      pause(time=1000)
+      goto(here)
+  }
+ 
+  </textarea>
+  <br>
+  <button class="zoeEvent D1 stop">Stop</button>
+  <button class="zoeEvent D1 init">INIT</button>   
+      
+  
+  <h1>Base D2</h1>
+  <svg id="oreoZoe_D2" width="1100" height="280"></svg>
+  <br>
+  <textarea id="code_D2" style="width:100ch;height:60ch">
+  
+  function init() {
+  
+      configure (out=D1, length=76, hasWhite=true)
+	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
+	  
+	  set(pixel=2,color=1)
+	  here:
+	  pause(time=1000)
+	  goto(here)
+	  
+  }
+  
+  </textarea>   
+  <br>
+  <button class="zoeEvent D2 stop">Stop</button>   
+  <button class="zoeEvent D2 init">INIT</button>
+  <hr>
+     
+  <script src="ZoeProcessor.js"></script>
+  <script src="neo.js"></script>
+  
+  <script>
+    NEO.initProcessors();
+    
+    //D1 Grid
+    NEO.setCursor(10,10, 1,4,15,0);
+    for(var z=0;z<3;++z) {
+       for(var y=0;y<8;++y) {
+           NEO.setCursor(10+120*z,10+y*15);
+           NEO.makeStrip(1,8);
+       }
+    }
+
+	//D2 Border
+	NEO.makeSquare(2,50,10,22,16, 0);
+	
+  </script>
+  
+  </body>
+  
+</html>

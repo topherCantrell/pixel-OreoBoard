@@ -1,4 +1,23 @@
+/**
+ * Create an asynchronous script process for the given script. The given "stripElement" is the SVG
+ * canvas that contains the target pixels. You can put as many strips on one SVG element as you 
+ * want -- or separate each strip into a separate element.
+ * 
+ * event(name)   - starts the asynchronous running of the "name" function. The thread will continue
+ *                 to run commands releasing the thread on all PAUSE commands.
+ * stop()        - stop the asynchronous running
+ * reset(script) - stop the asynchronous running and load up a new script
+ *  
+ * @param stripElement the SVG area that has the pixels for this script
+ * @param script the lines of the script to run
+ * @returns the asynchronous script object
+ */
 function initZoeProcessor(stripElement,script) {
+	
+	// The pixels are SVG elements:
+	// <circle id="D1_4" cx="110" cy="10" r="4" stroke="#E0E0E0" stroke-width="1" fill="#F8F8F8"></circle>
+	//
+	// The ID is the strip number (D1, D2, D3, or D4) and the pixel number (starting with 0)
     
     "use strict";
 	
@@ -12,8 +31,20 @@ function initZoeProcessor(stripElement,script) {
     var variables;
     var patterns;
     var running;
+    var scriptPos;
 	
 	var my = {};	
+	
+	function setPixel(pix,color) {
+		stripElement.find("#"+stripConfig.out+"_"+pix).attr("fill",color);	
+	}
+	
+	function setAllPixels(color) {
+		// Could be faster with a single query that picks up like "D1_*"
+		for(var x=0;x<stripConfig.length;++x) {
+			setPixel(x,color);
+		}		
+	}
 					
 	function substituteVars(line) {
 		while(true) {
@@ -144,7 +175,7 @@ function initZoeProcessor(stripElement,script) {
 	var OPERATORS = ['+','-','*','/','%'];
 	var LOGIC = ['<=','>=','==','!=','<','>'];
 	
-	my.runNext = function(cb) {				
+	function runNext(cb) {				
 				
 		try {
 						
@@ -356,8 +387,7 @@ function initZoeProcessor(stripElement,script) {
                           twoDigitHex(Math.floor((colors[c].green/150)*255))+
                           twoDigitHex(Math.floor((colors[c].blue/150)*255));
 			    var pix = getParameter('PIXEL',parts[1],"number");
-			    // TODO range check
-			    stripElement.find("#"+stripConfig.out+"_"+pix).attr("fill",rc);		
+			    setPixel(pix,rc);	
 			    cb();
 			}
 			
@@ -377,7 +407,7 @@ function initZoeProcessor(stripElement,script) {
 			            var rc = "#"+twoDigitHex(Math.floor((colors[c].red/150)*255))+
                             twoDigitHex(Math.floor((colors[c].green/150)*255))+
                             twoDigitHex(Math.floor((colors[c].blue/150)*255));
-			            stripElement.find("#"+stripConfig.out+"_"+pix).attr("fill",rc);  
+			            setPixel(pix,rc);			             
 			        }
 			    }			    
 			    cb();			    
@@ -389,7 +419,7 @@ function initZoeProcessor(stripElement,script) {
 				var rc = "#"+twoDigitHex(Math.floor((colors[c].red/150)*255))+
 				          twoDigitHex(Math.floor((colors[c].green/150)*255))+
 				          twoDigitHex(Math.floor((colors[c].blue/150)*255));
-				stripElement.find("circle").attr("fill",rc);
+				setAllPixels(rc);
 				cb();
 			}
 			
@@ -405,7 +435,7 @@ function initZoeProcessor(stripElement,script) {
 	};
 	
 	function run() {
-	    my.runNext(function() {
+	    runNext(function() {
             if(running) {
                 //setTimeout(my.run,0);
                 run();
@@ -446,15 +476,20 @@ function initZoeProcessor(stripElement,script) {
 	    functionStartStack = [];
 	    variables = {};
 	    patterns = {};
+	    
+	    // Sanity check the script. It must have an INIT function		
+		scriptPos = findFunction("INIT");
+	    if(scriptPos===undefined) {
+	    	throw "Must have an INIT function.";
+	    }
+	    ++scriptPos; // Skip over the INIT function declaration
+	    	    
 	};
 	
+	// Get ready to run
 	my.reset(script);
-        	
-	var scriptPos = findFunction("INIT");
-    if(scriptPos===undefined) throw "Must have an INIT function.";
-    ++scriptPos;   
-    running = false;
     	
 	return my;	
 	
 }
+

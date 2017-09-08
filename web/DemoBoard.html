@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8">
     <title>Demo Board</title>
@@ -28,8 +29,8 @@
   
   </textarea>   
   <br>
-  <button id="stop_D1">Stop</button>   
-  <button class="zoeEvent D1">INIT</button>
+  <button class="zoeEvent D1 stop">Stop</button>   
+  <button class="zoeEvent D1 init">INIT</button>
   <hr>
   
   <h1>Ring D2</h1>
@@ -99,9 +100,34 @@
   </textarea>
   <br>
   <button id="stop_D4">Stop</button>
-  <button class="zoeEvent D4">INIT</button>  
+  <button class="zoeEvent D4">INIT</button>    
   <script src="ZoeProcessor.js"></script>
   <script src="neo.js"></script>
+  
+  <script>
+    NEO.initProcessors();
+
+	//D1 Border
+	NEO.makeSquare(1,50,10,22,16, 0);
+	
+	//D2 Circle
+	NEO.setCursor(10,10, 2,4,20,0);
+	NEO.makeStrip(1,24);
+	
+	//D3 Strip
+	NEO.setCursor(10,10, 3,4,10,0);
+	NEO.makeStrip(1,22);
+	
+	//D4 Grid
+	NEO.setCursor(10,10, 4,4,15,0);
+	for(var z=0;z<3;++z) {
+	   for(var y=0;y<8;++y) {
+	       NEO.setCursor(10+120*z,10+y*15);
+	       NEO.makeStrip(1,8);
+	   }
+	}
+
+  </script>
   
   </body>
   
