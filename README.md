@@ -16,5 +16,5 @@ PCB:
 
 ## 2016 ##
 
-Every year is a new robot! Here are the [specifics for the 2016 robot](/topherCantrell/oreoboard/tree/master/2016).
+Every year is a new robot! Here are the [specifics for the 2016 robot](https://github.com/topherCantrell/oreoboard/tree/master/2016).
 
