@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NeoPixel 5858</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>    
+  </head>
+  
+  <body>
+  
+  <h1>Bottom</h1>
+  <svg id="oreoZoe_D3" width="1100" height="280"></svg>
+  <br>
+  <textarea id="code_D3" style="width:100ch;height:60ch">
+  
+
+// The robot sends these commands:
+// [ModeAutonomousRed]   Entering autonomous mode on RED team
+// [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
+// [ModeTeleop]          Entering teleop mode
+// [GearBasketOpen]      Open the gear basket
+// [GearBasketClose]     Close the gear basket		
+// [StopClimb]           Climber stop
+// [ClimbUp]             Climb up
+// [ClimbDown]           Climb down
+
+//                                PROP/NEO
+// Cable to D1 (plate)         is male/female
+// Cable to D2       (NOT USED)
+// Cable to D3 (bottom center) is male/female
+// Cable to D4 (basket doors)  is male/male (and changer if needed)
+
+function init() {
+
+    var teamColor
+    var x
+    var y
+
+	// D3 is the bottom of the robot (center square)
+	configure (out=D3, length=76, hasWhite=true)
+	
+	// Team Red
+	defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
+	defineColor(color=1,   W=0, R=10,  G=0,   B=0)
+	defineColor(color=2,   W=0, R=20,  G=0,   B=0)
+	defineColor(color=3,   W=0, R=30,  G=0,   B=0)
+	defineColor(color=4,   W=0, R=40,  G=0,   B=0)
+	defineColor(color=5,   W=0, R=50,  G=0,   B=0)
+	defineColor(color=6,   W=0, R=60,  G=0,   B=0)
+	defineColor(color=7,   W=0, R=70,  G=0,   B=0)
+	defineColor(color=8,   W=0, R=80,  G=0,   B=0)
+	defineColor(color=9,   W=0, R=90,  G=0,   B=0)
+	defineColor(color=10,   W=0, R=100,  G=0,   B=0)
+	defineColor(color=11,   W=0, R=110,  G=0,   B=0)
+	defineColor(color=12,   W=0, R=120,  G=0,   B=0)
+	defineColor(color=13,   W=0, R=130,  G=0,   B=0)
+	defineColor(color=14,   W=0, R=140,  G=0,   B=0)
+	defineColor(color=15,   W=0, R=150,  G=0,   B=0)
+	
+	// Team Blue
+	defineColor(color=32,   W=0, B=0,   G=0,   R=0)    
+	defineColor(color=33,   W=0, B=10,  G=0,   R=0)
+	defineColor(color=34,   W=0, B=20,  G=0,   R=0)
+	defineColor(color=35,   W=0, B=30,  G=0,   R=0)
+	defineColor(color=36,   W=0, B=40,  G=0,   R=0)
+	defineColor(color=37,   W=0, B=50,  G=0,   R=0)
+	defineColor(color=38,   W=0, B=60,  G=0,   R=0)
+	defineColor(color=39,   W=0, B=70,  G=0,   R=0)
+	defineColor(color=40,   W=0, B=80,  G=0,   R=0)
+	defineColor(color=41,   W=0, B=90,  G=0,   R=0)
+	defineColor(color=42,   W=0, B=100,  G=0,   R=0)
+	defineColor(color=43,   W=0, B=110,  G=0,   R=0)
+	defineColor(color=44,   W=0, B=120,  G=0,   R=0)
+	defineColor(color=45,   W=0, B=130,  G=0,   R=0)
+	defineColor(color=46,   W=0, B=140,  G=0,   R=0)
+	defineColor(color=47,   W=0, B=150,  G=0,   R=0)
+	
+	defineColor(color=20,   W=0, R=50, B=50, G=50)
+		
+	[teamColor] = 0
+    solid(color=47)
+    	
+	here:
+	pause(time=1000)
+	goto(here) 
+  
+}
+
+function [ModeAutonomousRed]() { //   Entering autonomous mode on RED team
+	[teamColor] = 0
+	[x] = [teamColor] + 15
+	
+	solid(color=[x])
+	
+	// Endless loop
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ModeAutonomousBlue]() { //  Entering autonomous mode on BLUE team
+	[teamColor] = 0
+	[x] = [teamColor] + 15
+	
+	solid(color=[x])
+	
+	// Endless loop
+	here:
+	pause(time=5000)
+	goto(here)	
+}
+
+function [ModeTeleop]() { //          Entering teleop mode
+
+  top:
+    [x] = 0    
+    [y] = [teamColor]
+    
+  loop1:
+    solid(color=[y])
+    pause(time=250)
+    [y] = [y] + 1    
+    [x] = [x] + 1
+    if([x]<15)
+      goto(loop1)
+      
+  loop2:
+    solid(color=[y])
+    pause(time=250)
+    [y] = [y] - 1
+    [x] = [x] - 1
+    if([x]>0) 
+      goto(loop2)
+    
+    goto(top)
+    
+}
+  
+  </textarea>  
+  <br>
+  <button id="stop_D3">Stop</button>   
+  <button class="zoeEvent D3">INIT</button>
+  <button class="zoeEvent D3" style="margin-left:2em">[MODEAUTONOMOUSRED]</button>
+  <button class="zoeEvent D3">[MODEAUTONOMOUSBLUE]</button>
+  <button class="zoeEvent D3">[MODETELEOP]</button>
+  <button class="zoeEvent D3"style="margin-left:1em">[GEARBASKETOPEN]</button>
+  <button class="zoeEvent D3">[GEARBASKETCLOSE]</button>
+  <button class="zoeEvent D3" style="margin-left:1em">[CLIMBUP]</button>
+  <button class="zoeEvent D3">[CLIMBDOWN]</button>
+  <button class="zoeEvent D3">[STOPCLIMB]</button>  
+  
+  <hr>
+  <h1>Doors</h1>
+  <svg id="oreoZoe_D4" width="1100" height="100"></svg>
+  <br>
+  <textarea id="code_D4" style="width:100ch;height:60ch">
+// The robot sends these commands:
+// [ModeAutonomousRed]   Entering autonomous mode on RED team
+// [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
+// [ModeTeleop]          Entering teleop mode
+// [GearBasketOpen]      Open the gear basket
+// [GearBasketClose]     Close the gear basket		
+// [StopClimb]           Climber stop
+// [ClimbUp]             Climb up
+// [ClimbDown]           Climb down
+
+//                                PROP/NEO
+// Cable to D1 (plate)         is male/female
+// Cable to D2 (bottom two)    is male/male
+// Cable to D3 (bottom center) is male/female
+// Cable to D4 (basket doors)  is male/male (and changer if needed)
+
+function init() {
+
+    var teamColor
+    var x
+    var y
+	
+	// D4 is the gear basket doors
+	// 47 pixels each door
+	configure (out=D4, length=94, hasWhite=false)
+	
+	defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black    
+    defineColor(color=1,   W=0, R=0, G=0,   B=100)    // Color 1  : Blue
+    
+    solid(color=1)
+    	
+here:
+	pause(time=1000)
+	goto(here) 
+  
+}
+
+function [ModeTeleop]() { //          Entering teleop mode
+	solid(color=0)
+	
+here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [GearBasketOpen]() {
+
+  [x] = 0
+  [y] = 47
+  
+here:
+  set(pixel=[x],color=0)
+  set(pixel=[y],color=0)
+  pause(time=100)
+  [x] = [x] + 1
+  [y] = [y] + 1
+  if([x]<47)
+    goto(here)
+
+here2:
+	pause(time=1000)
+	goto(here2) 
+	
+function [GearBasketClose]() {
+
+  [x] = 46
+  [y] = 93
+
+here:
+  set(pixel=[x],color=1)
+  set(pixel=[y],color=1)
+  pause(time=100)
+  [x] = [x] - 1
+  [y] = [y] - 1
+  if([y]>46)
+    goto(here)
+
+here2:
+	pause(time=1000)
+	goto(here2) 	
+}
+  </textarea>
+  <br>  
+  <button id="stop_D4">Stop</button>
+  <button class="zoeEvent D4">INIT</button>
+  <button class="zoeEvent D4" style="margin-left:2em">[MODEAUTONOMOUSRED]</button>
+  <button class="zoeEvent D4">[MODEAUTONOMOUSBLUE]</button>
+  <button class="zoeEvent D4">[MODETELEOP]</button>
+  <button class="zoeEvent D4"style="margin-left:1em">[GEARBASKETOPEN]</button>
+  <button class="zoeEvent D4">[GEARBASKETCLOSE]</button>
+  <button class="zoeEvent D4" style="margin-left:1em">[CLIMBUP]</button>
+  <button class="zoeEvent D4">[CLIMBDOWN]</button>
+  <button class="zoeEvent D4">[STOPCLIMB]</button>
+  
+  <hr>
+  <h1>Grid</h1>
+  <svg id="oreoZoe_D1" width="350" height="130"></svg>
+  <br>
+  <textarea id="code_D1" style="width:100ch;height:60ch">
+
+
+// The robot sends these commands:
+// [ModeAutonomousRed]   Entering autonomous mode on RED team
+// [ModeAutonomousBlue]  Entering autonomous mode on BLUE team
+// [ModeTeleop]          Entering teleop mode
+// [GearBasketOpen]      Open the gear basket
+// [GearBasketClose]     Close the gear basket		
+// [StopClimb]           Climber stop
+// [ClimbUp]             Climb up
+// [ClimbDown]           Climb down
+
+//                                PROP/NEO
+// Cable to D1 (plate)         is male/female
+// Cable to D2       (NOT USED)
+// Cable to D3 (bottom center) is male/female
+// Cable to D4 (basket doors)  is male/male (and changer if needed)
+	
+function init() {
+	
+  var teamColor
+  
+  [teamColor] = 2 // Neutral
+  
+  // The D1 area is the pixel grid
+  configure (out=D1, length=192, hasWhite=false)
+	  	
+  defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
+  defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
+  defineColor(color=2,   W=0, R=120, G=80,  B=4)   // Color 2  : Yellow(ish)      
+  //
+  defineColor(color=8,   W=0, R=0,   G=0,   B=100)  // Color 8  : Blue   
+  defineColor(color=9,   W=0, R=50,  G=50,  B=50)   // Color 9  : White
+  defineColor(color=10,  W=0, R=50,  G=50,  B=50)   // Color 10 : White
+  //
+  defineColor(color=11,  W=0, R=100, G=0,   B=0)    // Color 16 : Red   
+  defineColor(color=12,  W=0, R=50,  G=50,  B=50)   // Color 17 : White
+  defineColor(color=13,  W=0, R=50,  G=50,  B=50)   // Color 18 : White
+  
+  //
+  defineColor(color=20,  W=0, R=100, G=0, B=0) // Color 20 : Team Red
+  defineColor(color=21,  W=0, R=0, G=0, B=100) // Color 21 : Team Blue
+  defineColor(color=22,  W=0, R=5, G=5, B=5)   // Color 22 : Team Neutral
+  
+  // Large 5
+  pattern(number=0) {
+	  11111
+	  1....
+	  1....
+	  .111.
+	  ....1
+	  ....1
+	  11111
+  }
+   
+  // Large 8
+  pattern(number=1) {
+      22222
+      2...2
+      2...2
+      .222.
+      2...2
+      2...2
+      22222
+  }  
+  
+  pattern(number=2) {
+      1111
+	  1...
+	  111.
+	  ...1
+	  ...1
+	  1111
+  }
+  
+  pattern(number=3) {
+      2222
+      2..2
+      .22.
+      2..2
+      2..2
+      2222
+  }  
+  
+  pattern(number=4) {
+      111
+	  1..
+	  111
+	  ..1
+	  111
+  }
+  
+  pattern(number=5) {
+      222
+      2.2
+      222
+      2.2
+      222
+  }  
+  
+  // Blank the display
+  solid(color=0)
+    
+  // Draw the large 5858  
+  drawPattern(number=0,  x=0,  y=0)
+  drawPattern(number=1,  x=6,  y=0)
+  drawPattern(number=0,  x=12, y=0)
+  drawPattern(number=1,  x=18, y=0)
+      
+  // Endless loop
+  here:
+	  pause(time=5000)
+  goto(here)
+  
+}
+
+function alternate() {
+}
+
+function jiggle() {
+}
+
+function shrinkGrow() {
+}
+
+function [ModeAutonomousRed]() { //   Entering autonomous mode on RED team
+	[teamColor] = 20
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=22)
+	set(pixel=59,color=22)
+	// Endless loop
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ModeAutonomousBlue]() { //  Entering autonomous mode on BLUE team
+	[teamColor] = 20
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=22)
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ModeTeleop]() { //          Entering teleop mode
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=22)
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [GearBasketOpen]() { //      Open the gear basket
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=22)
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [GearBasketClose]() { //     Close the gear basket
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=22)
+	set(pixel=59,color=22)
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [StopClimb]() { //           Climber stop
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=22)
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ClimbUp]() { //             Climb up
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=22)
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+function [ClimbDown]() { //           Climb down
+	// Endless loop
+	set(pixel=56,color=[teamColor])
+	set(pixel=57,color=[teamColor])
+	set(pixel=58,color=[teamColor])
+	set(pixel=59,color=[teamColor])
+	here:
+	pause(time=5000)
+	goto(here)
+}
+
+
+
+  </textarea>
+  <br>
+  <button id="stop_D1">Stop</button>
+  <button class="zoeEvent D1">INIT</button>
+  <button class="zoeEvent D1" style="margin-left:2em">[MODEAUTONOMOUSRED]</button>
+  <button class="zoeEvent D1">[MODEAUTONOMOUSBLUE]</button>
+  <button class="zoeEvent D1">[MODETELEOP]</button>
+  <button class="zoeEvent D1"style="margin-left:1em">[GEARBASKETOPEN]</button>
+  <button class="zoeEvent D1">[GEARBASKETCLOSE]</button>
+  <button class="zoeEvent D1" style="margin-left:1em">[CLIMBUP]</button>
+  <button class="zoeEvent D1">[CLIMBDOWN]</button>
+  <button class="zoeEvent D1">[STOPCLIMB]</button>  
+  
+  <script src="ZoeProcessor.js"></script>
+  <script src="neo.js"></script>
+  
+  </body>
+  
+</html>

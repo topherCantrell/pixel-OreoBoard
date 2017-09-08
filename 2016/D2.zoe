@@ -1,0 +1,21 @@
+  function init() {
+  
+      configure (out=D2, length=24, hasWhite=true)   
+      defineColor(color=0,   W=0, R=0,   G=0,   B=0)    
+      defineColor(color=1,   W=0, R=0,  G=0,   B=100)
+      
+      var x
+      var delay
+      
+      [x] = 0
+      [delay] = 50
+      
+top:
+    solid(color=0)
+    set(pixel=[x],color=1)
+    pause(time=[delay])
+    [x] = [x] + 1
+    if([x]==24)
+      [x] = 0
+    goto(top)
+  }

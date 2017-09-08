@@ -1,0 +1,40 @@
+  
+  function init() {
+  
+      configure (out=D3, length=22, hasWhite=false)
+      defineColor(color=0,   W=0, R=0,   G=0,   B=0)    
+      defineColor(color=1,   W=0, R=0,  G=100,   B=100)
+      
+      var delay
+      var x
+      
+      [delay] = 20
+      
+      solid(color=0)
+      
+top:
+    
+    [x] = 0
+on:
+    set(pixel=[x],color=1)
+    pause(time=[delay])
+    [x] = [x] + 1
+    if([x]!=22)
+        goto(on)
+
+pause(time=1000)
+
+off:
+    set(pixel=[x],color=0)
+pause(time=[delay])
+[x] = [x] - 1
+if([x]!=0)
+    goto(off)
+
+solid(color=0)
+pause(time=1000)
+
+goto(top)
+ 
+      
+  }

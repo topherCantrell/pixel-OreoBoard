@@ -1,0 +1,76 @@
+// The square border of pixels. This was the bottom (underglow) of the
+// robot. It was blue or red depending on team. 
+
+// Here we'll "throb" blue and red
+
+function init() {
+  
+    configure (out=D1, length=96, hasWhite=true)
+    defineColor(color=0,   W=0, R=0,  G=0,   B=0)   
+    
+    defineColor(color=1,   W=0, R=0,  G=0,   B=20)
+    defineColor(color=2,   W=0, R=0,  G=0,   B=40)
+    defineColor(color=3,   W=0, R=0,  G=0,   B=60)
+    defineColor(color=4,   W=0, R=0,  G=0,   B=80)
+    defineColor(color=5,   W=0, R=0,  G=0,   B=100)
+    defineColor(color=6,   W=0, R=0,  G=0,   B=110)
+    defineColor(color=7,   W=0, R=0,  G=0,   B=120)
+    defineColor(color=8,   W=0, R=0,  G=0,   B=140)
+    
+    defineColor(color=11,   W=0, B=0,  G=0,   R=20)
+    defineColor(color=12,   W=0, B=0,  G=0,   R=40)
+    defineColor(color=13,   W=0, B=0,  G=0,   R=60)
+    defineColor(color=14,   W=0, B=0,  G=0,   R=80)
+    defineColor(color=15,   W=0, B=0,  G=0,   R=100)
+    defineColor(color=16,   W=0, B=0,  G=0,   R=110)
+    defineColor(color=17,   W=0, B=0,  G=0,   R=120)
+    defineColor(color=18,   W=0, B=0,  G=0,   R=140)
+    
+    var col
+    var cnt
+    var delay
+    
+    [delay] = 100
+    
+top:
+    [col] = 1    
+
+    gosub(THROB)
+    gosub(THROB)
+    gosub(THROB)
+    gosub(THROB)
+    
+    [col] = 11
+    
+    gosub(THROB)
+    gosub(THROB)
+    gosub(THROB)
+    gosub(THROB)
+
+    goto(top)
+      
+}
+
+function THROB() {
+
+    [cnt] = 0
+
+throbUp:
+    solid(color=[col])
+    pause(time=[delay])
+    [col] = [col] + 1
+    [cnt] = [cnt] + 1  
+    if([cnt]!=8)
+        goto(throbUp)
+        
+throbDown:
+    [col] = [col] - 1
+    [cnt] = [cnt] - 1
+    solid(color=[col])
+    pause(time=[delay])
+    if([cnt]!=0)
+        goto(throbDown)  
+               
+    return 
+}
+
