@@ -17,7 +17,7 @@
   
   function init() {
   
-      configure (out=D4, length=192, hasWhite=false)
+      configure (out=D1, length=192, hasWhite=false)
       defineColor(color=0,   W=0, R=0,   G=0,   B=0)    
       defineColor(color=1,   W=0, R=0,  G=0,   B=10)
       
@@ -34,13 +34,13 @@
       
   
   <h1>Base D2</h1>
-  <svg id="oreoZoe_D2" width="1100" height="280"></svg>
+  <svg id="oreoZoe_D2" width="1100" height="400"></svg>
   <br>
   <textarea id="code_D2" style="width:100ch;height:60ch">
   
   function init() {
   
-      configure (out=D1, length=76, hasWhite=true)
+      configure (out=D2, length=76, hasWhite=false)
 	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
 	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
 	  
@@ -73,7 +73,8 @@
     }
 
 	//D2 Border
-	NEO.makeSquare(2,50,10,22,16, 0);
+	NEO.makeSquare(2, 50,10, 25,24, 15, 0);	
+	NEO.makeSquare(2, 62,22, 25,24, 14, 98);
 	
   </script>
   

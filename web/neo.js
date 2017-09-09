@@ -41,8 +41,8 @@ var NEO = (function() {
 		$("#S"+stripNumber+"_"+number).attr("fill",color);
 	};
 	
-	my.makeSquare = function(strip,x,y,len,wid,snum) {
-		my.setCursor(x,y, strip,4,15,snum);
+	my.makeSquare = function(strip,x,y,len,wid,gap,snum) {
+		my.setCursor(x,y, strip,4,gap,snum);
 		my.makeStrip(1,len);
 		my.setCursor(NEO.cursor.x-5,NEO.cursor.y+10);
 		my.makeStrip(2,wid);
