@@ -11,21 +11,75 @@
   
     
   <h1>Grid D1</h1>
-  <svg id="oreoZoe_D1" width="350" height="130"></svg>
+  <svg id="oreoZoe_D1" width="350" height="130" style="background-color: black;"></svg>
   <br>
   <textarea id="code_D1" style="width:100ch;height:60ch">
   
-  function init() {
   
-      configure (out=D1, length=192, hasWhite=false)
-      defineColor(color=0,   W=0, R=0,   G=0,   B=0)    
-      defineColor(color=1,   W=0, R=0,  G=0,   B=10)
-      
-      set(pixel=2,color=1)
-      here:
-      pause(time=1000)
-      goto(here)
+    
+function init() {
+  
+  configure (out=D1, length=192, hasWhite=false)
+  
+  var flashCount
+
+  defineColor(color=0,   W=0, R=0,   G=0,   B=0)    // Color 0  : Black   
+  defineColor(color=1,   W=0, R=100, G=0,   B=0)    // Color 1  : Red
+  defineColor(color=2,   W=0, R=120, G=80,  B=4)    // Color 2  : Yellow(ish)      
+        
+  // Large 5
+  pattern(number=0) {
+      11111
+      1....
+      1....
+      .111.
+      ....1
+      ....1
+      11111
   }
+   
+  // Large 8
+  pattern(number=1) {
+      22222
+      2...2
+      2...2
+      .222.
+      2...2
+      2...2
+      22222
+  }  
+  
+top:
+  solid(color=0)
+  pause(time=500)
+  drawPattern(x=0,y=0,number=0)
+  pause(time=500)
+  drawPattern(x=6,y=0,number=1)
+  pause(time=500)
+  drawPattern(x=12,y=0,number=0)
+  pause(time=500)
+  drawPattern(x=18,y=0,number=1)  
+  pause(time=1000)
+
+  [flashCount] = 0  
+flash:
+  solid(color=0)
+  pause(time=500)
+  drawPattern(x=0,y=0,number=0)
+  drawPattern(x=6,y=0,number=1)
+  drawPattern(x=12,y=0,number=0)
+  drawPattern(x=18,y=0,number=1)
+  pause(time=500) 
+  [flashCount] = [flashCount] + 1
+  if( [flashCount] != 4)
+      goto(flash) 
+  
+  pause(time=4000)
+
+  goto(top)
+
+}
+
  
   </textarea>
   <br>
@@ -34,22 +88,100 @@
       
   
   <h1>Base D2</h1>
-  <svg id="oreoZoe_D2" width="1100" height="400"></svg>
+  <svg id="oreoZoe_D2" width="450" height="400" style="background-color: black;"></svg>
   <br>
   <textarea id="code_D2" style="width:100ch;height:60ch">
   
-  function init() {
   
-      configure (out=D2, length=76, hasWhite=false)
-	  defineColor(color=0,   W=0, R=0,   G=0,   B=0)  	
-	  defineColor(color=1,   W=0, R=0,  G=0,   B=10)
-	  
-	  set(pixel=2,color=1)
-	  here:
-	  pause(time=1000)
-	  goto(here)
-	  
+function init() {
+
+  configure (out=D2, length=98, hasWhite=false)
+  
+  var c
+  var x
+
+  pattern(number=0) {
+  ..1221..
   }
+
+  defineColor(color=0,    W=0, R=0,   G=0,   B=0)    // Black 
+  
+  defineColor(color=1,    W=0, R=0,   G=0,   B=0)    // Black 
+  defineColor(color=2,    W=0, R=0,   G=0,   B=0)    // Black   
+  defineColor(color=3,    W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=4,    W=0, R=120, G=80,  B=4)    // Yellow(ish)  
+  defineColor(color=5,    W=0, R=120, G=80,  B=4)    // Yellow(ish) 
+  defineColor(color=6,    W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=7,    W=0, R=0,   G=0,   B=0)    // Black
+  defineColor(color=8,    W=0, R=0,   G=0,   B=0)    // Black  
+  
+  defineColor(color=9,    W=0, R=0,   G=0,   B=0)    // Black 
+  defineColor(color=10,   W=0, R=0,   G=0,   B=0)    // Black   
+  defineColor(color=11,   W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=12,   W=0, R=120, G=80,  B=4)    // Yellow(ish)  
+  defineColor(color=13,   W=0, R=120, G=80,  B=4)    // Yellow(ish) 
+  defineColor(color=14,   W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=15,   W=0, R=0,   G=0,   B=0)    // Black
+  defineColor(color=16,   W=0, R=0,   G=0,   B=0)    // Black 
+	  
+  [c] = 1
+  [x] = 0
+  
+  goto(down)
+  	  
+up:
+  [x] = 0
+loopUp:
+  solid(color=0)
+  gosub(drawSlash)
+  pause(time=70)
+  [x] = [x] + 1
+  if([x]<91)
+      goto(loopUp)  
+
+down:      
+  [x] = 90
+loopDown:  
+  solid(color=0)
+  gosub(drawSlash)
+  pause(time=70)
+  [x] = [x] - 1
+  if([x]!=0)
+      goto(loopDown)
+  
+  goto(up)
+
+}
+ 
+// x = position
+// c = colorOffset 
+function drawSlash() {
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] - 7
+  [c] = [c] - 7
+  return
+}
   
   </textarea>   
   <br>
