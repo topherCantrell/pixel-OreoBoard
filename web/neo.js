@@ -72,35 +72,44 @@ var NEO = (function() {
 		 
 		 var isStop = t.hasClass("stop");
 		 var isInit = t.hasClass("init");
-		 var strip;
-		 var proc;
+		 
 		 if(t.hasClass("D1")) {
-		 	strip="D1";
-		 	proc = proc1;
+			 if(isStop) {
+			 	proc1.stop();
+			 } 
+			 if(isInit) {
+			 	proc1.reset($("#code_D1").val());
+			 } 
+			 proc1.event(t.text());			 
 		 }
 		 if(t.hasClass("D2")) {
-		 	strip="D2";
-		 	proc = proc2;
+			 if(isStop) {
+			 	proc2.stop();
+			 } 
+			 if(isInit) {
+			 	proc2.reset($("#code_D2").val());
+			 } 
+			 proc2.event(t.text());			 
 		 }
 		 if(t.hasClass("D3")) {
-		 	strip="D3";
-		 	proc = proc3;
+			 if(isStop) {
+			 	proc3.stop();
+			 }
+			 if(isInit) {
+			 	proc3.reset($("#code_D3").val());
+			 } 
+			 proc3.event(t.text());			 
 		 }
 		 if(t.hasClass("D4")) {
-		 	strip="D4";
-		 	proc = proc4;
-		 }
+			 if(isStop) {
+			 	proc4.stop();
+			 } 
+			 if(isInit) {
+			 	proc4.reset($("#code_D4").val());
+			 } 
+			 proc4.event(t.text());			 
+		 }		 
 		 
-		 if(isStop) {
-		 	proc.stop();
-		 	return;
-		 }
-		 
-		 if(isInit) {
-		 	proc.reset($("#code_"+strip).val());
-		 }
-		 proc.event(t.text());
-		     
 		});
 	}
 	
