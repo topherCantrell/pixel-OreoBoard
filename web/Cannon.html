@@ -187,6 +187,101 @@ function drawSlash() {
   <br>
   <button class="zoeEvent D2 stop">Stop</button>   
   <button class="zoeEvent D2 init">INIT</button>
+  <br>
+  <textarea id="code_D3" style="width:100ch;height:60ch">
+  
+  
+function init() {
+
+  configure (out=D2, length=98, hasWhite=false)
+  
+  var c
+  var x
+
+  pattern(number=0) {
+  ..1221..
+  }
+
+  defineColor(color=0,    W=0, R=0,   G=0,   B=0)    // Black 
+  
+  defineColor(color=1,    W=0, R=0,   G=0,   B=0)    // Black 
+  defineColor(color=2,    W=0, R=0,   G=0,   B=0)    // Black   
+  defineColor(color=3,    W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=4,    W=0, R=120, G=80,  B=4)    // Yellow(ish)  
+  defineColor(color=5,    W=0, R=120, G=80,  B=4)    // Yellow(ish) 
+  defineColor(color=6,    W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=7,    W=0, R=0,   G=0,   B=0)    // Black
+  defineColor(color=8,    W=0, R=0,   G=0,   B=0)    // Black  
+  
+  defineColor(color=9,    W=0, R=0,   G=0,   B=0)    // Black 
+  defineColor(color=10,   W=0, R=0,   G=0,   B=0)    // Black   
+  defineColor(color=11,   W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=12,   W=0, R=120, G=80,  B=4)    // Yellow(ish)  
+  defineColor(color=13,   W=0, R=120, G=80,  B=4)    // Yellow(ish) 
+  defineColor(color=14,   W=0, R=100, G=0,   B=0)    // Red
+  defineColor(color=15,   W=0, R=0,   G=0,   B=0)    // Black
+  defineColor(color=16,   W=0, R=0,   G=0,   B=0)    // Black 
+	  
+  [c] = 1
+  [x] = 0
+  
+  goto(down)
+  	  
+up:
+  [x] = 0
+loopUp:
+  solid(color=0)
+  gosub(drawSlash)
+  pause(time=70)
+  [x] = [x] + 1
+  if([x]<91)
+      goto(loopUp)  
+
+down:      
+  [x] = 90
+loopDown:  
+  solid(color=0)
+  gosub(drawSlash)
+  pause(time=70)
+  [x] = [x] - 1
+  if([x]!=0)
+      goto(loopDown)
+  
+  goto(up)
+
+}
+ 
+// x = position
+// c = colorOffset 
+function drawSlash() {
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] + 1
+  [c] = [c] + 1
+  set(pixel=[x],color=[c])
+  [x] = [x] - 7
+  [c] = [c] - 7
+  return
+}
+  
+  </textarea>   
   <hr>
      
   <script src="ZoeProcessor.js"></script>
