@@ -11,7 +11,7 @@
   
     
   <h1>Grid D1</h1>
-  <svg id="oreoZoe_D1" width="350" height="130" style="background-color: black;"></svg>
+  <svg class="oreoZoe_D1" width="350" height="130" style="background-color: black;"></svg>
   <br>
   <textarea id="code_D1" style="width:100ch;height:60ch">
   
@@ -88,7 +88,7 @@ flash:
       
   
   <h1>Base D2</h1>
-  <svg id="oreoZoe_D2" width="450" height="400" style="background-color: black;"></svg>
+  <svg class="oreoZoe_D2 oreoZoe_D3" width="450" height="400" style="background-color: black;"></svg>
   <br>
   <textarea id="code_D2" style="width:100ch;height:60ch">
   
@@ -185,15 +185,15 @@ function drawSlash() {
   
   </textarea>   
   <br>
-  <button class="zoeEvent D2 stop">Stop</button>   
-  <button class="zoeEvent D2 init">INIT</button>
+  <button class="zoeEvent D2 D3 stop">Stop</button>   
+  <button class="zoeEvent D2 D3 init">INIT</button>
   <br>
   <textarea id="code_D3" style="width:100ch;height:60ch">
   
   
 function init() {
 
-  configure (out=D2, length=98, hasWhite=false)
+  configure (out=D3, length=98, hasWhite=false)
   
   var c
   var x
@@ -301,7 +301,7 @@ function drawSlash() {
 
 	//D2 Border
 	NEO.makeSquare(2, 50,10, 25,24, 15, 0);	
-	NEO.makeSquare(2, 62,22, 25,24, 14, 98);
+	NEO.makeSquare(3, 62,22, 25,24, 14, 0);
 	
   </script>
   

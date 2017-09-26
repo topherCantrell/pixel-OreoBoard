@@ -19,7 +19,7 @@ var NEO = (function() {
 	
 	my.makeStrip = function(direction,length) {				
 		
-		var strips = $("#oreoZoe_D"+my.cursor.strip);
+		var strips = $(".oreoZoe_D"+my.cursor.strip);
 		var ox = OFFS[direction][0];
 		var oy = OFFS[direction][1];	
 		for(var z=0;z<length;++z) {		
@@ -34,7 +34,7 @@ var NEO = (function() {
 			my.cursor.y += oy*my.cursor.gap;
 			++my.cursor.number;
 		}
-		$("#oreoZoe_D"+my.cursor.strip).html($("#oreoZoe_D"+my.cursor.strip).html());
+		$(".oreoZoe_D"+my.cursor.strip).html($(".oreoZoe_D"+my.cursor.strip).html());
 	};
 	
 	my.setLED = function(stripNumber,number,color) {		
@@ -60,13 +60,15 @@ var NEO = (function() {
 		//class="zoeEvent D1 init"  - the INIT button (reset then INIT script)
 		//class="zoeEvent D1"       - whatever the text is becomes the event call
 
-		if($("#oreoZoe_D1").length) proc1 = initZoeProcessor($("#oreoZoe_D1"),$("#code_D1").val());
-		if($("#oreoZoe_D2").length) proc2 = initZoeProcessor($("#oreoZoe_D2"),$("#code_D2").val());
-		if($("#oreoZoe_D3").length) proc3 = initZoeProcessor($("#oreoZoe_D3"),$("#code_D3").val()); 
-		if($("#oreoZoe_D4").length) proc4 = initZoeProcessor($("#oreoZoe_D4"),$("#code_D4").val());
+		if($(".oreoZoe_D1").length) proc1 = initZoeProcessor($(".oreoZoe_D1"),$("#code_D1").val());
+		if($(".oreoZoe_D2").length) proc2 = initZoeProcessor($(".oreoZoe_D2"),$("#code_D2").val());
+		if($(".oreoZoe_D3").length) proc3 = initZoeProcessor($(".oreoZoe_D3"),$("#code_D3").val()); 
+		if($(".oreoZoe_D4").length) proc4 = initZoeProcessor($(".oreoZoe_D4"),$("#code_D4").val());
 
 		$(".zoeEvent").bind("click",function() {
 		 var t = $(this);
+		 
+		 // TODO allow multiple matches
 		 
 		 var isStop = t.hasClass("stop");
 		 var isInit = t.hasClass("init");
