@@ -3,7 +3,7 @@
 
 <img src="(https://github.com/topherCantrell/oreoboard/blob/master/art/construct01.jpg">
 
-<img src="(https://github.com/topherCantrell/oreoboard/blob/master/art/construct02.jpg">
+<img src="(https://github.com/topherCantrell/oreoboard/blob/master/art/construct02.jpg" width="100">
 
 <img src="(https://github.com/topherCantrell/oreoboard/blob/master/art/construct03.jpg">
 
