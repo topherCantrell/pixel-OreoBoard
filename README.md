@@ -8,11 +8,11 @@ Named after the young Golden Hurricane who inspired it.
 
 Schematic:
 
-![](https://github.com/topherCantrell/oreoboard/blob/master/art/OreoSCH.jpg)
+![](art/OreoSCH.jpg)
 
 PCB:
 
-![](https://github.com/topherCantrell/oreoboard/blob/master/art/OreoPCB.jpg)
+![](art/OreoPCB.jpg)
 
 ## 2016
 
