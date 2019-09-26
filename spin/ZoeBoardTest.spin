@@ -33,7 +33,7 @@ pub StripTest
 
   PauseMSec(1000)
 
-  STRIP.draw(2, @colors, @pixels1, pinD1,  8)
+  STRIP.draw(2, @colors, @pixels1, pinD1,  @pixels2 - @pixels1)
   STRIP.draw(2, @colors, @pixels2, pinD2,  8)
   STRIP.draw(2, @colors, @pixels3, pinD3,  8)
   STRIP.draw(2, @colors, @pixels4, pinD4,  8)
@@ -55,7 +55,13 @@ colors
     long $00_20_20_20  ' 4
 
 pixels1
-    byte 1,3,2,1,0,1,2,4
+    byte 4,4,4,4,4,4,4,4
+    byte 1,2,3,1,2,3,1,2
+    byte 1,1,1,1,1,1,1,1
+    '
+    byte 2,2,2,2,2,2,2,2
+    byte 3,3,3,3,3,3,3,3
+    byte 4,4,4,4,4,4,4,4  
 
 pixels2
     byte 2,3,2,1,0,1,2,3
